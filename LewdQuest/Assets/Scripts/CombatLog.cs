@@ -30,4 +30,10 @@ public class CombatLog : MonoBehaviour {
 
 
 	}
+
+	public void logEnemyPain(string newText){
+
+
+		text.text += "\n \n<color=#ff0000ff>" + newText + "</color>";
+	}
 }

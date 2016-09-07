@@ -14,10 +14,17 @@ public class Character  {
 	public bool alive = true;
 	public int totalHP;
 	public bool gone;
+	public string image { get; set; }
 	public bool alreadyAttacked { get; set; }
 
 
-	public Character(int id, string name,int hp , int level, int attack , int magicPower){
+
+
+	/***
+	 * SEx Traits.
+	 * /*/
+
+	public Character(int id, string name,int hp , int level, int attack , int magicPower, string image){
 		this.id = id;
 		this.hp = hp;
 		this.totalHP = hp;
@@ -25,7 +32,7 @@ public class Character  {
 		this.level = level;
 		this.attack = attack;
 		this.magicPower = magicPower;
-
+		this.image = image;
 	}
 
 	public int getTotalHp(){

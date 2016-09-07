@@ -8,6 +8,7 @@ public class UIManagerScript : MonoBehaviour {
 	public Sprite[] images;
 	public GameObject itemPrefab;
 	public CombatLog combatLog;
+	public EnemyCreator enemyCreator;
 	Hashtable map = new Hashtable();
 	ArrayList enemyMap;
 	GameObject enemyPanel;
@@ -27,7 +28,7 @@ public class UIManagerScript : MonoBehaviour {
 
 	States state;
 	void Start () {
-		
+		enemyCreator = new EnemyCreator ();
 		enemyMap = new ArrayList ();
 		state = States.PLAYERCHOICE;
 		enemyPanel = GameObject.Find ("EnemyPanel");
@@ -37,9 +38,9 @@ public class UIManagerScript : MonoBehaviour {
 			newItem.transform.parent = enemyPanel.gameObject.transform;
 			newItem.transform.localScale = Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
-			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = images [Random.Range(0,2)];
-			Character character = prepareEnemy (1);
+			Character character = prepareEnemy (0);
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
+			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = images [Random.Range(0,2)];
 			enemyMap.Add(new Chara_UI_Map(newItem, character ));
 		//	GameObject hpBar = GameObject.Find("hpCount").GetComponentInChildren<Text>();
 
@@ -52,19 +53,7 @@ public class UIManagerScript : MonoBehaviour {
 
 	public Character prepareEnemy(int id){
 
-
-		switch (id) {
-
-		case 1:
-			DummyCharacter x = new DummyCharacter();
-			return x;
-
-
-
-		}
-
-		return null;
-
+		return EnemyCreator.create(id);
 	}
 	
 	// Update is called once per frame
@@ -137,9 +126,9 @@ public class UIManagerScript : MonoBehaviour {
 
 		}
 	}
-		public void dealDamage(){
+	public void dealDamage(int position){
 		if(state == States.PLAYERCHOICE){
-			StartCoroutine("playerCouroutine");
+			StartCoroutine("playerCouroutine", position);
 		}
 
 	}
@@ -156,14 +145,17 @@ public class UIManagerScript : MonoBehaviour {
 	IEnumerator enemyCouroutine() {
 		for (int x = 0 ; x < enemyMap.Count; x++) {
 			actEnemy (x);
-			yield return new WaitForSeconds(.9f);
+			if (((Chara_UI_Map)enemyMap [x]).getCharacter ().alive)
+				yield return new WaitForSeconds (.9f);
+			else
+				yield return new WaitForSeconds (.01f);
 		}
 		waiting = false;
 		Debug.Log ("DONE");
 			
 	}
 
-	IEnumerator playerCouroutine() {
+	IEnumerator playerCouroutine(int position) {
 
 		if (enemyMap.Count < 1) {
 			//Button buttonPrefab = UnityEngine.Resources.Load<Button>("UI/Button");
@@ -171,12 +163,12 @@ public class UIManagerScript : MonoBehaviour {
 		}
 
 		Attack attack;
-		GameObject currentUI = ((Chara_UI_Map)enemyMap [0]).getGameObject ();
-		Character character = ((Chara_UI_Map)enemyMap [0]).getCharacter ();
+		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			
-			character.receiveDamage (2);
-			((Chara_UI_Map)enemyMap [0]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
+			character.receiveDamage (5);
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			combatLog.logText ("You smack the bitch with a dried cucumber angrily.");
 		}
 		yield return new WaitForSeconds(.5f);
@@ -208,6 +200,11 @@ public class UIManagerScript : MonoBehaviour {
 		this.state = state;
 	}
 
+
+
+	public ArrayList getEnemyMap(){
+		return enemyMap;
+	}
 
 
 }
