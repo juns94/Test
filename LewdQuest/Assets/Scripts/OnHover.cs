@@ -12,7 +12,7 @@ public class OnHover : MonoBehaviour {
 	public void OnMouseEnter() {
 
 
-	///	outline.enabled = true;
+		outline.enabled = true;
 
 		//Debug.Log (" ENTRO ");
 		//rend.GetMaterial().color = Color.red;
@@ -22,7 +22,7 @@ public class OnHover : MonoBehaviour {
 	}
 	public  void OnMouseExit() {
 
-	//	outline.enabled = false;
+		outline.enabled = false;
 		//Debug.Log (" SALIO ");
 		//rend.GetMaterial().color = Color.white;
 	}

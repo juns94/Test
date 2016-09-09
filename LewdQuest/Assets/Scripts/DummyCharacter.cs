@@ -1,9 +1,6 @@
-﻿public class DummyCharacter : Character {
+﻿public class DummyCharacter  {
 
 
-	public DummyCharacter( ) : base(1,"Dummy",20,2,3,4 , "aurelia"){ 
-		
-	}
 
 
 

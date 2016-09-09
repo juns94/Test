@@ -16,15 +16,22 @@ public class Character  {
 	public bool gone;
 	public string image { get; set; }
 	public bool alreadyAttacked { get; set; }
+	public bool female { get; set; }
 
 
 
 
 	/***
-	 * SEx Traits.
-	 * /*/
+	 * SEX Traits.
+	 **/
+	public int obedience{ get; set; }
+	public int horny{ get; set; }
 
-	public Character(int id, string name,int hp , int level, int attack , int magicPower, string image){
+
+
+
+
+	public Character(int id, string name,int hp , int level, int attack , int magicPower, string image , bool female){
 		this.id = id;
 		this.hp = hp;
 		this.totalHP = hp;
@@ -33,6 +40,7 @@ public class Character  {
 		this.attack = attack;
 		this.magicPower = magicPower;
 		this.image = image;
+		this.female = female;
 	}
 
 	public int getTotalHp(){
@@ -69,6 +77,13 @@ public class Character  {
 
 	public bool getAlive(){
 		return alive;
+	}
+
+
+	public void makeHorny( int amount){
+		if (horny < 100) { 
+			horny += amount;
+		}
 	}
 
 

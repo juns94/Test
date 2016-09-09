@@ -7,7 +7,7 @@ public class EnemyCreator {
 		switch (id) {
 
 		case 0:
-			return new Character(id,"Aurelia",20,1,5,10,"_aurelia");
+			return new Character(id,"Aurelia",20,1,5,10,"_aurelia",true);
 
 
 
