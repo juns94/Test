@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
 public class UIManagerScript : MonoBehaviour {
@@ -39,9 +40,9 @@ public class UIManagerScript : MonoBehaviour {
 			newItem.transform.parent = enemyPanel.gameObject.transform;
 			newItem.transform.localScale = Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
-			Character character = prepareEnemy (0);
+			Character character = reRollCharacter(EnemyCreator.create(Random.Range(0,2)));
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
-			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = images [Random.Range(0,2)];
+			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
 			enemyMap.Add(new Chara_UI_Map(newItem, character ));
 		//	GameObject hpBar = GameObject.Find("hpCount").GetComponentInChildren<Text>();
 
@@ -51,17 +52,31 @@ public class UIManagerScript : MonoBehaviour {
 
 		for (int x = 0; x < partyNumber; x++) {
 			GameObject item = GameObject.Find ("hpCombo");
-			Character character = new Character (0, "you", 30, 1, 1, 1, "", false);
+			Character character = new Character (0, "you", 230, 1, 1, 1, "", false);
 			partyMap.Add(new Chara_UI_Map(item, character ));
 		}
 			
 
 	}
 
+	private Character reRollCharacter(Character character){
+		if (character.female) {
 
-	public Character prepareEnemy(int id){
+			while (isAlreadyInBattle (character)) {
+				character = EnemyCreator.create (Random.Range (0, 2));
+			}
 
-		return EnemyCreator.create(id);
+		} else {
+			return character;
+		}
+		return character;
+	}
+	private bool isAlreadyInBattle(Character character){
+		for (int x = 0; x < enemyMap.Count; x++) {
+			if (character.id == ((Chara_UI_Map)enemyMap [x]).getCharacter ().id)
+				return true;
+		}
+		return false;
 	}
 	
 	// Update is called once per frame
@@ -119,8 +134,10 @@ public class UIManagerScript : MonoBehaviour {
 				images = currentUI.GetComponentsInChildren<Image> ();
 				currentUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)currentChara.getHp (), (float)currentChara.getTotalHp ());
 			}
-			//images [2].transform.localScale = new Vector3((float)currentChara.getHp () / (float)currentChara.getTotalHp (),1,1);
-				//new Vector3(0.5f, 1, 1);
+
+
+
+
 			if (!currentChara.getAlive()) {
 
 				if (!currentChara.gone) {
@@ -144,6 +161,9 @@ public class UIManagerScript : MonoBehaviour {
 			Image[] images = null;
 			GameObject currentUI = ((Chara_UI_Map)partyMap [x]).getGameObject ();
 			Character currentChara = ((Chara_UI_Map)partyMap [x]).getCharacter ();
+			if (!currentChara.alive)
+				StartCoroutine ("Lose");
+				
 			//currentUI.GetComponentsInChildren<Text> () [2].text = currentChara.getHp () + "/" + currentChara.getTotalHp ();
 			if (currentUI != null) {
 				images = currentUI.GetComponentsInChildren<Image> ();
@@ -174,6 +194,11 @@ public class UIManagerScript : MonoBehaviour {
 		if(state == States.PLAYERCHOICE){
 			StartCoroutine("playerCouroutine", position);
 		}
+
+	}
+
+	public void attemptFuck(int position){
+
 
 	}
 
@@ -215,12 +240,7 @@ public class UIManagerScript : MonoBehaviour {
 
 	IEnumerator playerCouroutine(int position) {
 
-		if (enemyMap.Count < 1) {
-			//Button buttonPrefab = UnityEngine.Resources.Load<Button>("UI/Button");
-//Instantiate (buttonPrefab);
-		}
 
-		Attack attack;
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
@@ -243,9 +263,14 @@ public class UIManagerScript : MonoBehaviour {
 
 		if (currentChara.getAlive ()) {
 			// busca un atack aqui de la lista del
-			currentUI.GetComponent<Animator> ().Play ("Attack");
-			combatLog.logEnemyText (currentChara.getName () + " attacks with the force of a thousand suns.");
-			dealDamageParty (0);
+
+			if (currentChara.horny > 80) {
+				combatLog.logText (currentChara.getName () + " is too horny to attack!");
+			} else {
+				currentUI.GetComponent<Animator> ().Play ("Attack");
+				combatLog.logEnemyText (currentChara.getName () + " attacks with the force of a thousand suns.");
+				dealDamageParty (0);
+			}
 		}
 	}
 
@@ -254,6 +279,13 @@ public class UIManagerScript : MonoBehaviour {
 		
 		yield return new WaitForSeconds(.5f);
 		Destroy (enemyUI);
+
+	}
+
+	IEnumerator Lose() {
+
+		yield return new WaitForSeconds(.5f);
+		SceneManager.LoadScene ("LoseScene");
 
 	}
 
@@ -272,16 +304,22 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	public void attemptRun(){
-
-		combatLog.logText (" You attempt to run!! but fail inevitable because this feauture is not yet implemented by St0rm. ");
+		if (Random.Range (0, 3) == 1) {
+			SceneManager.LoadScene ("MapScene");
+		}
+		combatLog.logText (" You attempt to run!! but fail inevitably because this feauture is not yet implemented by St0rm. ");
 		state = States.ENEMYCHOICE;
 	}
 
 	public void attemptGrope(int pos){
 		Character character = ((Chara_UI_Map)enemyMap[pos]).getCharacter ();
-		if (character.getAlive () & Random.Range (0, 5) == 4) {
+		if (character.horny > 60 | Random.Range (0, 3) == 2) {
 			//  
-			character.makeHorny (10);
+
+			character.makeHorny (20);
+			if (character.horny > 69)
+				combatLog.logGreenNeedy(character.getName (), character.female);
+			else
 			combatLog.logGreen (character.getName (), character.female);
 		} else
 			combatLog.logText (" You fail to grope " + character.getName () + ".");

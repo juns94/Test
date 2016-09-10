@@ -20,13 +20,13 @@ public class CombatLog : MonoBehaviour {
 
 	public void logText(string newText){
 
-		text.text += "\n \n" + newText;
+		text.text += "\n" + newText;
 
 	}
 
 	public void logEnemyText( string newText){
 
-		text.text += "\n \n<color=#ff0000ff>" + newText + "</color>";
+		text.text += "\n<color=#ff0000ff>" + newText + "</color>";
 
 
 	}
@@ -34,7 +34,7 @@ public class CombatLog : MonoBehaviour {
 	public void logEnemyPain(string newText){
 
 
-		text.text += "\n \n<color=#ff0000ff>" + newText + "</color>";
+		text.text += "\n<color=#ff0000ff>" + newText + "</color>";
 	}
 
 
@@ -73,10 +73,10 @@ public class CombatLog : MonoBehaviour {
 			return;
 		}
 
-		switch(Random.Range(0,3)){
+		switch(Random.Range(0,4)){
 
 		case 0:
-			text.text += "\n \n<color=#008000ff> You grope " + name + "'s tits nonchalantly, provoking a slight blush on her face as she steps back swiftly.</color>";
+			text.text += "\n \n<color=#008000ff> You grope " + name + "'s chest, provoking a mimld blush on her face as she steps back swiftly.</color>";
 			break;
 		case 1:
 			text.text += "\n \n<color=#008000ff> Moans escape from " + name + "'s lips as you grab her buttocks. </color>" ;
@@ -86,6 +86,39 @@ public class CombatLog : MonoBehaviour {
 			break;
 		case 3:
 			text.text += "\n \n<color=#008000ff>" + name + "  jerks and tries to hide a moan as you feel her body. Your hands are swatted shortly afterwards. </color>";
+			break;
+
+		}
+
+		//text.text += " ( " + name + "'s hornyness increased. ) ";
+
+
+	}
+
+	/*
+	 * LOGS COMBAT LOGS FOR VERY HORNY CHARACTERS
+	 * */
+	public void logGreenNeedy(string name, bool female){
+
+
+		if (!female) {
+			text.text += "\n \n You grope "+ name + " who seems to enjoy it. " ;
+			return;
+		}
+
+		switch(Random.Range(0,4)){
+
+		case 0:
+			text.text += "\n \n<color=#008000ff> You grope " + name + "'s chest, making her blush. </color>";
+			break;
+		case 1:
+			text.text += "\n \n<color=#008000ff> "+ name + " no longer hides her moans as you grope her body. </color>" ;
+			break;
+		case 2:
+			text.text += "\n \n<color=#008000ff> " + name + " gives you bed eyes as you feel her up. </color>";
+			break;
+		case 3:
+			text.text += "\n \n<color=#008000ff>" + name + "  holds your hand as you touch her and doesn't let go. </color>";
 			break;
 
 		}

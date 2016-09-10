@@ -134,7 +134,7 @@ public class createPanel : MonoBehaviour {
 
 
 			} else {
-				manager.dealDamage (getLastAlivePosition ());
+				selectAction(type, getLastAlivePosition());
 			}
 
 
@@ -160,7 +160,7 @@ public class createPanel : MonoBehaviour {
 	void disableOldGui(){
 
 		Button[] oldButtons = panelParent.GetComponentsInChildren<Button> ();
-
+		if(oldButtons != null)
 		for (int x = 0; x < oldButtons.Length; x++) {
 			oldButtons [x].enabled = false;
 		}
@@ -173,7 +173,7 @@ public class createPanel : MonoBehaviour {
 		
 
 		Button[] oldButtons = panelParent.GetComponentsInChildren<Button> ();
-
+		if(oldButtons != null)
 		for (int x = 0; x < oldButtons.Length; x++) {
 			oldButtons [x].enabled = enabled;
 		}
