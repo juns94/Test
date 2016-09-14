@@ -13,12 +13,13 @@ public class HpDecreaseSlow : MonoBehaviour {
 	float factor = 1;
 	float blinkTime = 10;
 	float lastHp;
+	Transform initialPosition;
 
 	public GameObject damagePrefab;
 
 	// Use this for initialization
 	void Start () {
-	
+		initialPosition = gameObject.transform;
 		image = gameObject.GetComponent<Image> ();
 	}
 	
@@ -83,9 +84,9 @@ public class HpDecreaseSlow : MonoBehaviour {
 
 	public void CreateDamagePopup(float damage){
 		GameObject damageGameObject = (GameObject)Instantiate(damagePrefab,
-			gameObject.transform.position,
-			gameObject.transform.rotation);
-		damageGameObject.transform.parent = gameObject.transform;
+			initialPosition.position,
+			initialPosition.rotation);
+		damageGameObject.transform.parent = gameObject.transform.parent.transform;
 		damageGameObject.transform.localScale = Vector3.one;
 		damageGameObject.GetComponentInChildren<Text>().text = damage.ToString();
 	}
