@@ -5,8 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
 public class UIManagerScript : MonoBehaviour {
-
-	public Sprite[] images;
+	public GameObject fuckButton;
 	public GameObject itemPrefab;
 	public CombatLog combatLog;
 	public EnemyCreator enemyCreator;
@@ -16,6 +15,8 @@ public class UIManagerScript : MonoBehaviour {
 	public int enemyNumber = 1;
 	int partyNumber = 1;
 	bool waiting;
+	bool fightFinished = false;
+	public AudioClip kek;
 
 	public enum States {
 		START,
@@ -29,18 +30,19 @@ public class UIManagerScript : MonoBehaviour {
 
 	States state;
 	void Start () {
-		enemyCreator = new EnemyCreator ();
 		enemyMap = new ArrayList ();
 		partyMap = new ArrayList ();
 		state = States.PLAYERCHOICE;
 		enemyPanel = GameObject.Find ("EnemyPanel");
+
+		enemyNumber = Random.Range (1, 3);
 		for (int x = 0; x < enemyNumber; x++) {
 			GameObject newItem = Instantiate (itemPrefab) as GameObject;
 			newItem.name = gameObject.name + " item at (" + x + ")";
 			newItem.transform.parent = enemyPanel.gameObject.transform;
 			newItem.transform.localScale = Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
-			Character character = reRollCharacter(EnemyCreator.create(Random.Range(0,2)));
+			Character character = reRollCharacter(EnemyCreator.create(Random.Range(0,3)));
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
 			enemyMap.Add(new Chara_UI_Map(newItem, character ));
@@ -137,8 +139,53 @@ public class UIManagerScript : MonoBehaviour {
 
 
 
+			if (currentChara.horny > 69) {
+				try{
+				currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (currentChara.image+"_h");
+				}catch(System.Exception e){
+				currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (currentChara.image);
+				}
+
+			}
 
 			if (!currentChara.getAlive()) {
+
+				if (LewdUtilities.aliveCount (this) == 0) {
+					/// This is called if the enemy is alone and it's qt grill
+					/// 
+					if (currentChara.female) {
+						if (!currentChara.gone) {
+							Debug.Log (" Trapped en opening fuckpanel ");
+							combatLog.clear (true);
+							combatLog.logExhausted (currentChara.getName ());
+							openFuckPanel (currentChara);
+							currentChara.gone = true;
+
+						}
+					} else {
+
+						if (!fightFinished) {
+							GameObject panel = GameObject.Find ("PartyInfo");
+							LewdUtilities.deleteAllButtons (panel);
+							GameObject exit = Instantiate (fuckButton);
+							exit.transform.parent = panel.transform;
+							exit.transform.localScale = Vector3.one;
+							exit.transform.localPosition = Vector3.zero;
+							exit.GetComponentInChildren<Text> ().text = "Exit";
+							exit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+								SceneManager.LoadScene ("MapScene");
+
+
+							});
+							fightFinished = true;
+						}
+
+					}
+
+
+
+				}
+
 
 				if (!currentChara.gone) {
 					if(images != null)
@@ -192,15 +239,68 @@ public class UIManagerScript : MonoBehaviour {
 	}
 	public void dealDamage(int position){
 		if(state == States.PLAYERCHOICE){
+			state = States.WAITPLAYER;
+			waiting = true;
 			StartCoroutine("playerCouroutine", position);
 		}
 
 	}
 
-	public void attemptFuck(int position){
+	public void openFuckPanel(Character character){
+
+		Debug.Log (" Abrio fuckpanel");
+		GameObject panel  = GameObject.Find ("PartyInfo");
+		LewdUtilities.deleteAllButtons (panel);
+		Scene scene = LewdSceneManager.getSceneFromId (character.id);
+
+		if (scene != null) {
+			for (int x = 0; x < 1; x++) {
+				GameObject button = Instantiate (fuckButton);
+				button.transform.parent = panel.transform;
+				button.transform.localScale = Vector3.one;
+				button.transform.localPosition = Vector3.zero;
+				button.GetComponentInChildren<Text> ().text = scene.sceneName;
+				button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+
+					Destroy(enemyPanel.GetComponentsInChildren<Transform>()[1].gameObject);
+
+					GameObject fuckpanel = GameObject.Find("fuckPanel");
+					fuckpanel.GetComponentsInChildren<Image>()[1].sprite =  Resources.Load <Sprite> (scene.image);
+					Transform transform = fuckpanel.transform;
+					transform.localPosition = new Vector3(transform.position.x,transform.position.y,27);
+					fuckpanel.transform.parent = enemyPanel.transform;
+
+					LewdUtilities.deleteAllButtons (panel);
+					combatLog.logText (scene.sceneText);
+					GameObject exit = Instantiate (fuckButton);
+						exit.transform.parent = panel.transform;
+						exit.transform.localScale = Vector3.one;
+						exit.transform.localPosition = Vector3.zero;
+						exit.GetComponentInChildren<Text> ().text = "Exit";
+						exit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+							SceneManager.LoadScene("MapScene");
 
 
+						});
+
+				
+				});
+			}
+		}
+
+
+		GameObject recruit = Instantiate (fuckButton);
+		recruit.transform.parent = panel.transform;
+		recruit.transform.localScale = Vector3.one;
+		recruit.transform.localPosition = Vector3.zero;
+		recruit.GetComponentInChildren<Text> ().text = "Attempt Recruit";
+		recruit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+
+			attemptRecruit();
+			LewdUtilities.deleteAllButtons(panel);
+		});
 	}
+			
 
 	public void dealDamageParty(int position){
 
@@ -208,13 +308,15 @@ public class UIManagerScript : MonoBehaviour {
 		GameObject currentUI = ((Chara_UI_Map)partyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
-
+			int totalalive = LewdUtilities.aliveCount (this);
 			character.receiveDamage (5);
+
+			} 
 			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 		//	combatLog.logText ("You smack the bitch with a dried cucumber angrily.");
 		}
 
-	}
+
 
 
 
@@ -229,12 +331,12 @@ public class UIManagerScript : MonoBehaviour {
 		for (int x = 0 ; x < enemyMap.Count; x++) {
 			actEnemy (x);
 			if (((Chara_UI_Map)enemyMap [x]).getCharacter ().alive)
-				yield return new WaitForSeconds (.9f);
+				yield return new WaitForSeconds (.5f);
 			else
 				yield return new WaitForSeconds (.01f);
 		}
 		waiting = false;
-		Debug.Log ("DONE");
+		//Debug.Log ("DONE");
 			
 	}
 
@@ -245,14 +347,16 @@ public class UIManagerScript : MonoBehaviour {
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			
-			character.receiveDamage (5);
+			character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
-			combatLog.logText ("You smack the bitch with a dried cucumber angrily.");
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+			combatLog.logText ("You attack " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
 		}
 		yield return new WaitForSeconds(.5f);
+	
 		state = States.ENEMYCHOICE;
-
-		Debug.Log ("DONE");
+		waiting = false;
+	//	Debug.Log ("DONE");
 
 	}
 
@@ -268,7 +372,7 @@ public class UIManagerScript : MonoBehaviour {
 				combatLog.logText (currentChara.getName () + " is too horny to attack!");
 			} else {
 				currentUI.GetComponent<Animator> ().Play ("Attack");
-				combatLog.logEnemyText (currentChara.getName () + " attacks with the force of a thousand suns.");
+				combatLog.logEnemyText (currentChara.getName () + " attacks you with the force of a thousand suns.");
 				dealDamageParty (0);
 			}
 		}
@@ -289,6 +393,46 @@ public class UIManagerScript : MonoBehaviour {
 
 	}
 
+	IEnumerator delayedEnemyChoice() {
+
+		yield return new WaitForSeconds(.3f);
+		waiting = false;
+	}
+
+	IEnumerator delayedRecruit() {
+		yield return new WaitForSeconds(.3f);
+		if (Random.Range (0, 3) == 1) {
+
+			combatLog.logText (" The enemy decides to join you. ");
+
+
+		} else {
+			
+			combatLog.logText (" The enemy used the chance to run away. ");
+			int position = LewdUtilities.getLastVisiblePosition(this);
+			GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+			currentUI.GetComponent<Animator> ().Play ("Dead");
+
+		}
+
+		GameObject panel  = GameObject.Find ("PartyInfo");
+	
+			for (int x = 0; x < 1; x++) {
+				GameObject button = Instantiate (fuckButton);
+				button.transform.parent = panel.transform;
+				button.transform.localScale = Vector3.one;
+				button.transform.localPosition = Vector3.zero;
+				button.GetComponentInChildren<Text> ().text = "Exit";
+				button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+				SceneManager.LoadScene("MapScene");
+
+
+				});
+			}
+
+			
+	}
+
 
 
 
@@ -304,30 +448,46 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	public void attemptRun(){
-		if (Random.Range (0, 3) == 1) {
-			SceneManager.LoadScene ("MapScene");
+
+		if (state == States.PLAYERCHOICE) {
+			if (Random.Range (0, 3) == 1) {
+				SceneManager.LoadScene ("MapScene");
+			}
+			combatLog.logText (" You attempt to run!!.... but <b>fail</b>.");
+			state = States.ENEMYCHOICE;
+
 		}
-		combatLog.logText (" You attempt to run!! but fail inevitably because this feauture is not yet implemented by St0rm. ");
-		state = States.ENEMYCHOICE;
 	}
 
 	public void attemptGrope(int pos){
-		Character character = ((Chara_UI_Map)enemyMap[pos]).getCharacter ();
-		if (character.horny > 60 | Random.Range (0, 3) == 2) {
-			//  
 
-			character.makeHorny (20);
-			if (character.horny > 69)
-				combatLog.logGreenNeedy(character.getName (), character.female);
-			else
-			combatLog.logGreen (character.getName (), character.female);
-		} else
-			combatLog.logText (" You fail to grope " + character.getName () + ".");
+		if (state == States.PLAYERCHOICE) {
+			waiting = true;
+			state = States.WAITPLAYER;
+			Character character = ((Chara_UI_Map)enemyMap [pos]).getCharacter ();
+			if (character.alive) {
+				if (character.horny > 60 | Random.Range (0, 3) == 2) {
+					//  
 
+					character.makeHorny (20);
+					if (character.horny > 69)
+						combatLog.logGreenNeedy (character.getName (), character.female);
+					else
+						combatLog.logGreen (character.getName (), character.female);
+				} else
+					combatLog.logText (" You fail to grope " + character.getName () + ".");
 
-		state = States.ENEMYCHOICE;
+			}
+			StartCoroutine ("delayedEnemyChoice");		
+		}
 	}
 
 
 
+
+	public void attemptRecruit(){
+		combatLog.logText ("You attempt to recruit the enemy as part of your harem");
+		combatLog.logSlowly ("...................................");
+		StartCoroutine ("delayedRecruit");
+	}
 }

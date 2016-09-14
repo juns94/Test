@@ -12,6 +12,9 @@ public class EnemyCreator {
 		case 1:
 			return new Character (id, "Orb", 25, 1, 5, 10, "_orb", false);
 			break;
+		case 2:
+			return new Character (id, "Lidia", 30, 1, 5, 10, "_lidia", true);
+			break;
 
 
 

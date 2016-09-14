@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 public class CombatLog : MonoBehaviour {
 
 	// Use this for initialization
 	Text text;
+	ArrayList textQueue;
+	string textToAdd ="";
 	void Start () {
+		textQueue = new ArrayList ();
 		text = GetComponent<Text> ();
 		text.text += " \n\n\n ";
 	}
@@ -13,14 +16,37 @@ public class CombatLog : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//text.text += "/AAA " ;
+
+		if (textToAdd.Length > 0) {
+			text.text += textToAdd [0];
+			textToAdd = textToAdd.Remove (0, 1);
 	
+		} else {
+
+
+			if (textQueue.Count > 0) {
+
+				text.text += textQueue [0];
+				textQueue.RemoveAt (0);
+			}
+
+		}
+
+		
+			//text.text += "/AAA " ;
+	
+		
 	}
 
 
 	public void logText(string newText){
+		string arrayListItem = "";
+	
+		arrayListItem += "\n\n" + newText;
+		arrayListItem += "\n";
 
-		text.text += "\n" + newText;
+
+		textQueue.Add (arrayListItem);
 
 	}
 
@@ -69,26 +95,28 @@ public class CombatLog : MonoBehaviour {
 		
 
 		if (!female) {
-			text.text += "\n \n Woa, what the fuck are you doing you sick fuck? That has a penis. ";
+			text.text += "\n \n<color=#008000ff>Woa, what the fuck are you doing you sick fuck? That has a penis. ( You still grope it anyways ) </color>";
 			return;
 		}
 
 		switch(Random.Range(0,4)){
 
 		case 0:
-			text.text += "\n \n<color=#008000ff> You grope " + name + "'s chest, provoking a mimld blush on her face as she steps back swiftly.</color>";
+			text.text += "\n \n<color=#008000ff>You grope " + name + "'s chest, provoking a mild blush on her face as she steps back swiftly.</color>";
 			break;
 		case 1:
-			text.text += "\n \n<color=#008000ff> Moans escape from " + name + "'s lips as you grab her buttocks. </color>" ;
+			text.text += "\n \n<color=#008000ff>Moans escape from " + name + "'s lips as you grab her buttocks. </color>" ;
 			break;
 		case 2:
-			text.text += "\n \n<color=#008000ff> You succesfully feel up " + name + " in the middle of the fight. </color>";
+			text.text += "\n \n<color=#008000ff>You succesfully feel up " + name + " in the middle of the fight. </color>";
 			break;
 		case 3:
 			text.text += "\n \n<color=#008000ff>" + name + "  jerks and tries to hide a moan as you feel her body. Your hands are swatted shortly afterwards. </color>";
 			break;
 
 		}
+
+		text.text += "\n";
 
 		//text.text += " ( " + name + "'s hornyness increased. ) ";
 
@@ -102,20 +130,20 @@ public class CombatLog : MonoBehaviour {
 
 
 		if (!female) {
-			text.text += "\n \n You grope "+ name + " who seems to enjoy it. " ;
+			text.text += "\n \nYou grope "+ name + " who seems to enjoy it. " ;
 			return;
 		}
 
 		switch(Random.Range(0,4)){
 
 		case 0:
-			text.text += "\n \n<color=#008000ff> You grope " + name + "'s chest, making her blush. </color>";
+			text.text += "\n \n<color=#008000ff>You grope " + name + "'s chest, making her blush. </color>";
 			break;
 		case 1:
-			text.text += "\n \n<color=#008000ff> "+ name + " no longer hides her moans as you grope her body. </color>" ;
+			text.text += "\n \n<color=#008000ff>"+ name + " no longer hides her moans as you grope her body. </color>" ;
 			break;
 		case 2:
-			text.text += "\n \n<color=#008000ff> " + name + " gives you bed eyes as you feel her up. </color>";
+			text.text += "\n \n<color=#008000ff>" + name + " gives you bed eyes as you feel her up. </color>";
 			break;
 		case 3:
 			text.text += "\n \n<color=#008000ff>" + name + "  holds your hand as you touch her and doesn't let go. </color>";
@@ -125,6 +153,40 @@ public class CombatLog : MonoBehaviour {
 
 		//text.text += " ( " + name + "'s hornyness increased. ) ";
 
+
+	}
+
+	public void clear(){
+		text.text = "";
+	}
+	public void clear(bool rotate){
+		gameObject.GetComponent<RectTransform>().pivot = new Vector2(0f, 1f);
+		text.text = "";
+		//text.gameObject.transform.rot
+	}
+
+
+	public void logExhausted(string name){
+
+		switch(Random.Range(0,2)){
+
+		case 0:
+			text.text += "\n \n<color=#008000ff>" + name + " is too <b>exhausted</b> to keep going. You see a chance to pin her down. </color>";
+			break;
+		case 1:
+			text.text += "\n \n<color=#008000ff>"+ name + " can no longer <b>fight</b>. You advance and approach her. </color>" ;
+			break;
+		}
+
+
+
+	}
+
+
+
+	public void logSlowly(string newText){
+		text.text += "\n";
+		textToAdd = newText;
 
 	}
 }

@@ -45,12 +45,12 @@ public class HpDecreaseSlow : MonoBehaviour {
 
 
 		}
-
+		/*
 		if (((totalHp - dealt) / totalHp > 0) && ((totalHp - dealt) / totalHp) < 0.05) {
 			Debug.Log (" TA MUERLTO ");
 			image.transform.localScale = new Vector3 (0, 1, 1);
 		}
-
+/*/
 
 		if (currentHp < 5) {
 
