@@ -22,7 +22,6 @@ public class createPanel : MonoBehaviour {
 	//	panel  = GameObject.Find ("_popUpPanel");
 
 		manager = GameObject.Find ("UIManager").GetComponent<UIManagerScript>();
-		Debug.Log (" EL MANAGER ES " + manager);
 	}
 	
 	// Update is called once per frame

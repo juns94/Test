@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/BattleSceneTest.unity
+- path: Assets/Scenes/PartyScene.unity
   isLoaded: 1
   isActive: 1

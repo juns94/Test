@@ -2,8 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class LewdUtilities : MonoBehaviour  {
 
+
+public class LewdUtilities : MonoBehaviour  {
+	static int lastAlivePos = 0;
 
 	public static int aliveCount(UIManagerScript manager){
 		ArrayList enemyMap = manager.getEnemyMap ();
@@ -19,11 +21,12 @@ public class LewdUtilities : MonoBehaviour  {
 	public static int getLastAlivePosition(UIManagerScript manager){
 		ArrayList enemyMap = manager.getEnemyMap ();
 		for (int x = 0; x < enemyMap.Count; x++) {
-			if (((Chara_UI_Map)enemyMap [x]).getCharacter().getAlive ())
+			if (((Chara_UI_Map)enemyMap [x]).getCharacter ().getAlive ()) {
+				lastAlivePos = x;	
 				return x;
-
+			}
 		}
-		return 	0;
+		return 	lastAlivePos;
 
 	}
 

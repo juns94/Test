@@ -14,9 +14,14 @@ public class UIManagerScript : MonoBehaviour {
 	GameObject enemyPanel;
 	public int enemyNumber = 1;
 	int partyNumber = 1;
+	int lastAlivePosition;
 	bool waiting;
 	bool fightFinished = false;
+
+	GameObject mapManager;
+
 	public AudioClip kek;
+
 
 	public enum States {
 		START,
@@ -30,31 +35,41 @@ public class UIManagerScript : MonoBehaviour {
 
 	States state;
 	void Start () {
+		int region = 0;
+		mapManager = GameObject.Find("MapManager");
+		if (mapManager != null)
+			region = mapManager.GetComponent<MapManager> ().region;
+		enemyNumber = mapManager.GetComponent<MapManager> ().getEnemyNumber();
+
+
 		enemyMap = new ArrayList ();
 		partyMap = new ArrayList ();
 		state = States.PLAYERCHOICE;
 		enemyPanel = GameObject.Find ("EnemyPanel");
 
-		enemyNumber = Random.Range (1, 3);
 		for (int x = 0; x < enemyNumber; x++) {
+
 			GameObject newItem = Instantiate (itemPrefab) as GameObject;
 			newItem.name = gameObject.name + " item at (" + x + ")";
 			newItem.transform.parent = enemyPanel.gameObject.transform;
 			newItem.transform.localScale = Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
-			Character character = reRollCharacter(EnemyCreator.create(Random.Range(0,3)));
+			Character character = reRollCharacter(EnemyCreator.create(region));
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
 			enemyMap.Add(new Chara_UI_Map(newItem, character ));
 		//	GameObject hpBar = GameObject.Find("hpCount").GetComponentInChildren<Text>();
-
 		
 		}
+
+
+
 
 
 		for (int x = 0; x < partyNumber; x++) {
 			GameObject item = GameObject.Find ("hpCombo");
 			Character character = new Character (0, "you", 230, 1, 1, 1, "", false);
+			character.hp = PlayerPrefs.GetInt ("hp", 250);
 			partyMap.Add(new Chara_UI_Map(item, character ));
 		}
 			
@@ -126,8 +141,12 @@ public class UIManagerScript : MonoBehaviour {
 
 	void updateEnemies(){
 
+		//Debug.Log (lastAlivePosition);
+
 		for (int x = 0; x < enemyMap.Count; x++) {
 
+
+			lastAlivePosition = LewdUtilities.getLastAlivePosition (this);
 			Image[] images = null;
 			GameObject currentUI = ((Chara_UI_Map)enemyMap [x]).getGameObject ();
 			Character currentChara = ((Chara_UI_Map)enemyMap [x]).getCharacter ();
@@ -148,14 +167,14 @@ public class UIManagerScript : MonoBehaviour {
 
 			}
 
-			if (!currentChara.getAlive()) {
+			if (!currentChara.getAlive())  {  ////// SI ESTA MUERTO, SIN IMPORTAR LA POSICION!!!!
 
-				if (LewdUtilities.aliveCount (this) == 0) {
+				if (LewdUtilities.aliveCount (this) == 0 & lastAlivePosition == x) {
 					/// This is called if the enemy is alone and it's qt grill
 					/// 
 					if (currentChara.female) {
 						if (!currentChara.gone) {
-							Debug.Log (" Trapped en opening fuckpanel ");
+
 							combatLog.clear (true);
 							combatLog.logExhausted (currentChara.getName ());
 							openFuckPanel (currentChara);
@@ -164,7 +183,12 @@ public class UIManagerScript : MonoBehaviour {
 						}
 					} else {
 
+
 						if (!fightFinished) {
+
+
+
+	
 							GameObject panel = GameObject.Find ("PartyInfo");
 							LewdUtilities.deleteAllButtons (panel);
 							GameObject exit = Instantiate (fuckButton);
@@ -174,7 +198,7 @@ public class UIManagerScript : MonoBehaviour {
 							exit.GetComponentInChildren<Text> ().text = "Exit";
 							exit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 								SceneManager.LoadScene ("MapScene");
-
+								Destroy( GameObject.Find("MapManager"));
 
 							});
 							fightFinished = true;
@@ -248,13 +272,15 @@ public class UIManagerScript : MonoBehaviour {
 
 	public void openFuckPanel(Character character){
 
-		Debug.Log (" Abrio fuckpanel");
+		// Debug.Log (" Abrio fuckpanel con " + character.name );
 		GameObject panel  = GameObject.Find ("PartyInfo");
 		LewdUtilities.deleteAllButtons (panel);
 		Scene scene = LewdSceneManager.getSceneFromId (character.id);
 
 		if (scene != null) {
+	
 			for (int x = 0; x < 1; x++) {
+
 				GameObject button = Instantiate (fuckButton);
 				button.transform.parent = panel.transform;
 				button.transform.localScale = Vector3.one;
@@ -262,29 +288,15 @@ public class UIManagerScript : MonoBehaviour {
 				button.GetComponentInChildren<Text> ().text = scene.sceneName;
 				button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 
-					Destroy(enemyPanel.GetComponentsInChildren<Transform>()[1].gameObject);
-
-					GameObject fuckpanel = GameObject.Find("fuckPanel");
-					fuckpanel.GetComponentsInChildren<Image>()[1].sprite =  Resources.Load <Sprite> (scene.image);
-					Transform transform = fuckpanel.transform;
-					transform.localPosition = new Vector3(transform.position.x,transform.position.y,27);
-					fuckpanel.transform.parent = enemyPanel.transform;
-
-					LewdUtilities.deleteAllButtons (panel);
-					combatLog.logText (scene.sceneText);
-					GameObject exit = Instantiate (fuckButton);
-						exit.transform.parent = panel.transform;
-						exit.transform.localScale = Vector3.one;
-						exit.transform.localPosition = Vector3.zero;
-						exit.GetComponentInChildren<Text> ().text = "Exit";
-						exit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
-							SceneManager.LoadScene("MapScene");
-
-
-						});
-
-				
+					this.gameObject.AddComponent<SceneManagerScript>();
+					SceneManagerScript sceneManager = this.gameObject.GetComponent<SceneManagerScript>();
+					sceneManager.setEverything(enemyPanel, panel,scene,character,this);
+					sceneManager.startManager();
 				});
+
+
+
+				Debug.Log (" termino el metodo?????");
 			}
 		}
 
@@ -296,7 +308,7 @@ public class UIManagerScript : MonoBehaviour {
 		recruit.GetComponentInChildren<Text> ().text = "Attempt Recruit";
 		recruit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 
-			attemptRecruit();
+			attemptRecruit(character.id);
 			LewdUtilities.deleteAllButtons(panel);
 		});
 	}
@@ -309,8 +321,10 @@ public class UIManagerScript : MonoBehaviour {
 		Character character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			int totalalive = LewdUtilities.aliveCount (this);
-			character.receiveDamage (5);
 
+			character.receiveDamage (5);
+			PlayerPrefs.SetInt ("hp", character.getHp());
+			PlayerPrefs.Save ();
 			} 
 			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 		//	combatLog.logText ("You smack the bitch with a dried cucumber angrily.");
@@ -346,8 +360,8 @@ public class UIManagerScript : MonoBehaviour {
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
-			
-			character.receiveDamage (Random.Range(4,7));
+			character.receiveDamage (15);
+			//character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
 			combatLog.logText ("You attack " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
@@ -399,11 +413,13 @@ public class UIManagerScript : MonoBehaviour {
 		waiting = false;
 	}
 
-	IEnumerator delayedRecruit() {
+	IEnumerator delayedRecruit(int id) {
 		yield return new WaitForSeconds(.3f);
 		if (Random.Range (0, 3) == 1) {
 
 			combatLog.logText (" The enemy decides to join you. ");
+			PlayerPrefs.SetInt ("" + id, 1);
+			PlayerPrefs.Save ();
 
 
 		} else {
@@ -425,6 +441,7 @@ public class UIManagerScript : MonoBehaviour {
 				button.GetComponentInChildren<Text> ().text = "Exit";
 				button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 				SceneManager.LoadScene("MapScene");
+				Destroy(mapManager);
 
 
 				});
@@ -451,11 +468,12 @@ public class UIManagerScript : MonoBehaviour {
 
 		if (state == States.PLAYERCHOICE) {
 			if (Random.Range (0, 3) == 1) {
+				Destroy( GameObject.Find("MapManager"));
 				SceneManager.LoadScene ("MapScene");
+			} else {
+				combatLog.logText (" You attempt to run!!.... but <b>fail</b>.");
+				state = States.ENEMYCHOICE;
 			}
-			combatLog.logText (" You attempt to run!!.... but <b>fail</b>.");
-			state = States.ENEMYCHOICE;
-
 		}
 	}
 
@@ -485,9 +503,9 @@ public class UIManagerScript : MonoBehaviour {
 
 
 
-	public void attemptRecruit(){
+	public void attemptRecruit(int id){
 		combatLog.logText ("You attempt to recruit the enemy as part of your harem");
 		combatLog.logSlowly ("...................................");
-		StartCoroutine ("delayedRecruit");
+		StartCoroutine ("delayedRecruit",id);
 	}
 }

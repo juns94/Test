@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+                                                                                                                                                                                                                                                                                                                                                                           using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +7,7 @@ public class LoseScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+	 
 	}
 	
 	// Update is called once per frame
@@ -17,7 +18,8 @@ public class LoseScript : MonoBehaviour {
 
 	public void retry (){
 
-		SceneManager.LoadScene ("BattleSceneTest");
+		SceneManager.LoadScene ("MapScene");
+		PlayerPrefs.SetInt ("hp", 250);
 
 	}
 }

@@ -67,6 +67,11 @@ public class CombatLog : MonoBehaviour {
 	public void logEnemyDeath(string name, bool female){
 
 
+		if (!female) {
+			text.text += "\n \n "+ name + " suddenly stops moving as they slump and die. ";
+			return;
+		}
+
 		switch(Random.Range(0,3)){
 
 		case 0:
