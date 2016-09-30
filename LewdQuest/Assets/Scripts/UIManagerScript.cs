@@ -12,16 +12,15 @@ public class UIManagerScript : MonoBehaviour {
 	ArrayList partyMap;
 	ArrayList enemyMap;
 	GameObject enemyPanel;
-	public int enemyNumber = 1;
+	public int enemyNumber = 3;
 	int partyNumber = 1;
 	int lastAlivePosition;
 	bool waiting;
 	bool fightFinished = false;
-
 	GameObject mapManager;
+	GameObject itemPanel;
 
-	public AudioClip kek;
-
+	public bool safe = true;
 
 	public enum States {
 		START,
@@ -37,29 +36,34 @@ public class UIManagerScript : MonoBehaviour {
 	void Start () {
 		int region = 0;
 		mapManager = GameObject.Find("MapManager");
-		if (mapManager != null)
+		if (mapManager != null) {
 			region = mapManager.GetComponent<MapManager> ().region;
-		enemyNumber = mapManager.GetComponent<MapManager> ().getEnemyNumber();
+			enemyNumber = mapManager.GetComponent<MapManager> ().getEnemyNumber ();
+		}
 
 
-		enemyMap = new ArrayList ();
-		partyMap = new ArrayList ();
-		state = States.PLAYERCHOICE;
-		enemyPanel = GameObject.Find ("EnemyPanel");
+		enemyMap 	= new ArrayList ();
+		partyMap 	= new ArrayList ();
+		state 		= States.PLAYERCHOICE;
+		enemyPanel 	= GameObject.Find ("EnemyPanel");
+		itemPanel 	= GameObject.Find ("ItemPanel");
+
+	//	itemPanel.SetActive (false);
 
 		for (int x = 0; x < enemyNumber; x++) {
-
+			Character character = null;
 			GameObject newItem = Instantiate (itemPrefab) as GameObject;
-			newItem.name = gameObject.name + " item at (" + x + ")";
-			newItem.transform.parent = enemyPanel.gameObject.transform;
-			newItem.transform.localScale = Vector3.one;
+			newItem.transform.parent 		= enemyPanel.gameObject.transform;
+			newItem.transform.localScale 	= Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
-			Character character = reRollCharacter(EnemyCreator.create(region));
+			if (safe) {
+				character = reRollCharacter (EnemyCreator.create (region));
+			} else {
+				EnemyCreator.create (4);
+			}
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
 			enemyMap.Add(new Chara_UI_Map(newItem, character ));
-		//	GameObject hpBar = GameObject.Find("hpCount").GetComponentInChildren<Text>();
-		
 		}
 
 
@@ -68,7 +72,7 @@ public class UIManagerScript : MonoBehaviour {
 
 		for (int x = 0; x < partyNumber; x++) {
 			GameObject item = GameObject.Find ("hpCombo");
-			Character character = new Character (0, "you", 230, 1, 1, 1, "", false);
+			Character character = new Character (0, "Yourself", 230, 1, 1, 1, "", false);
 			character.hp = PlayerPrefs.GetInt ("hp", 250);
 			partyMap.Add(new Chara_UI_Map(item, character ));
 		}
@@ -96,7 +100,7 @@ public class UIManagerScript : MonoBehaviour {
 		return false;
 	}
 	
-	// Update is called once per frame
+
 	void Update () {
 
 
@@ -140,9 +144,6 @@ public class UIManagerScript : MonoBehaviour {
 
 
 	void updateEnemies(){
-
-		//Debug.Log (lastAlivePosition);
-
 		for (int x = 0; x < enemyMap.Count; x++) {
 
 
@@ -150,7 +151,6 @@ public class UIManagerScript : MonoBehaviour {
 			Image[] images = null;
 			GameObject currentUI = ((Chara_UI_Map)enemyMap [x]).getGameObject ();
 			Character currentChara = ((Chara_UI_Map)enemyMap [x]).getCharacter ();
-			//currentUI.GetComponentsInChildren<Text> () [2].text = currentChara.getHp () + "/" + currentChara.getTotalHp ();
 			if (currentUI != null) {
 				images = currentUI.GetComponentsInChildren<Image> ();
 				currentUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)currentChara.getHp (), (float)currentChara.getTotalHp ());
@@ -160,9 +160,11 @@ public class UIManagerScript : MonoBehaviour {
 
 			if (currentChara.horny > 69) {
 				try{
-				currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (currentChara.image+"_h");
+					Sprite temp =  Resources.Load <Sprite> (currentChara.image+"_h");
+					if(temp!= null)
+					currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = temp;
 				}catch(System.Exception e){
-				currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (currentChara.image);
+				//currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (currentChara.image);
 				}
 
 			}
@@ -185,18 +187,16 @@ public class UIManagerScript : MonoBehaviour {
 
 
 						if (!fightFinished) {
-
-
-
-	
-							GameObject panel = GameObject.Find ("PartyInfo");
+							
+							GameObject panel 				= GameObject.Find ("PartyInfo");
 							LewdUtilities.deleteAllButtons (panel);
-							GameObject exit = Instantiate (fuckButton);
-							exit.transform.parent = panel.transform;
-							exit.transform.localScale = Vector3.one;
-							exit.transform.localPosition = Vector3.zero;
-							exit.GetComponentInChildren<Text> ().text = "Exit";
-							exit.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+
+							GameObject exit 				= Instantiate (fuckButton);
+							exit.transform.parent 			= panel.transform;
+							exit.transform.localScale 		= Vector3.one;
+							exit.transform.localPosition 	= Vector3.zero;
+							exit.GetComponentInChildren<Text>().text = "Exit";
+							exit.GetComponentInChildren<Button>().onClick.AddListener (() => {
 								SceneManager.LoadScene ("MapScene");
 								Destroy( GameObject.Find("MapManager"));
 
@@ -234,32 +234,47 @@ public class UIManagerScript : MonoBehaviour {
 			Character currentChara = ((Chara_UI_Map)partyMap [x]).getCharacter ();
 			if (!currentChara.alive)
 				StartCoroutine ("Lose");
-				
-			//currentUI.GetComponentsInChildren<Text> () [2].text = currentChara.getHp () + "/" + currentChara.getTotalHp ();
+		
 			if (currentUI != null) {
 				images = currentUI.GetComponentsInChildren<Image> ();
 				currentUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)currentChara.getHp (), (float)currentChara.getTotalHp ());
 
 			}
-			//images [1].transform.localScale = new Vector3((float)currentChara.getHp () / (float)currentChara.getTotalHp (),1,1);
-			//currentUI.GetComponentInChildren<Text>().gameObject.transform.parent = null;
+
 			currentUI.GetComponentInChildren<Text>().text = currentChara.getHp() + "/" + currentChara.getTotalHp();
 
-			//new Vector3(0.5f, 1, 1);
-		/*	if (!currentChara.getAlive()) {
-
-				if (!currentChara.gone) {
-					if(images != null)
-						images [3].CrossFadeAlpha (0.0f, 0.3f, false);
-					currentUI.GetComponent<Animator> ().Play ("Dead");
-					combatLog.logEnemyDeath (currentChara.getName () , currentChara.female);
-					currentChara.gone = true;
-					StartCoroutine ("deleteEnemyUI", currentUI);
-				}
-
-			}
-*/
 		}
+	}
+
+	public void useItem(int position , Item item, bool isPlayer){
+		if(state == States.PLAYERCHOICE){
+			state = States.WAITPLAYER;
+			waiting = true;
+			GameObject currentUI;
+			Character character;
+
+
+			if (!isPlayer) {
+				currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+				character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+			} else {
+				 currentUI = ((Chara_UI_Map)partyMap [0]).getGameObject ();
+				 character = ((Chara_UI_Map)partyMap [0]).getCharacter ();
+			}
+
+
+			if (character.getAlive ()) {
+				ItemCreator.useItem (character, item.id);
+				//character.receiveDamage (Random.Range(4,7));
+				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
+				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+				combatLog.logGreen("You use the <size=20><b>"+ item.name + "</b></size> on " + character.name +".");
+			}
+
+			Invoke ("setEnemyTurn", 0.5f);
+			//StartCoroutine("itemCouroutine", position, itemId, isPlayer);
+		}
+
 	}
 	public void dealDamage(int position){
 		if(state == States.PLAYERCHOICE){
@@ -271,14 +286,11 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	public void openFuckPanel(Character character){
-
-		// Debug.Log (" Abrio fuckpanel con " + character.name );
 		GameObject panel  = GameObject.Find ("PartyInfo");
 		LewdUtilities.deleteAllButtons (panel);
-		Scene scene = LewdSceneManager.getSceneFromId (character.id);
+		Scene scene = LewdSceneManager.getSceneFromId (character.id, character.horny);
 
 		if (scene != null) {
-	
 			for (int x = 0; x < 1; x++) {
 
 				GameObject button = Instantiate (fuckButton);
@@ -294,9 +306,6 @@ public class UIManagerScript : MonoBehaviour {
 					sceneManager.startManager();
 				});
 
-
-
-				Debug.Log (" termino el metodo?????");
 			}
 		}
 
@@ -314,31 +323,26 @@ public class UIManagerScript : MonoBehaviour {
 	}
 			
 
-	public void dealDamageParty(int position){
-
-
+	public void dealDamageParty(int position, int damage){
 		GameObject currentUI = ((Chara_UI_Map)partyMap [position]).getGameObject ();
-		Character character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
+		Character  character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			int totalalive = LewdUtilities.aliveCount (this);
-
-			character.receiveDamage (5);
+			character.receiveDamage (damage);
 			PlayerPrefs.SetInt ("hp", character.getHp());
 			PlayerPrefs.Save ();
 			} 
-			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
-		//	combatLog.logText ("You smack the bitch with a dried cucumber angrily.");
 		}
-
-
-
-
-
-
+		
 	public void actEnemyTurn(){
 		waiting = true;
 		StartCoroutine("enemyCouroutine");
 		changeState (States.WAIT);
+	}
+
+	public void setEnemyTurn(){
+		state = States.ENEMYCHOICE;
+		waiting = false;
 	}
 
 	IEnumerator enemyCouroutine() {
@@ -350,8 +354,6 @@ public class UIManagerScript : MonoBehaviour {
 				yield return new WaitForSeconds (.01f);
 		}
 		waiting = false;
-		//Debug.Log ("DONE");
-			
 	}
 
 	IEnumerator playerCouroutine(int position) {
@@ -360,7 +362,7 @@ public class UIManagerScript : MonoBehaviour {
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
-			character.receiveDamage (15);
+			character.receiveDamage (Random.Range(3 , 8));
 			//character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
@@ -370,8 +372,23 @@ public class UIManagerScript : MonoBehaviour {
 	
 		state = States.ENEMYCHOICE;
 		waiting = false;
-	//	Debug.Log ("DONE");
+	}
 
+	IEnumerator itemCouroutine(int position, int itemId, bool playerItem) {
+
+		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+		if (character.getAlive ()) {
+			ItemCreator.useItem (character, itemId);
+			//character.receiveDamage (Random.Range(4,7));
+			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
+			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+			combatLog.logText ("You use the "+ " on " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
+		}
+		yield return new WaitForSeconds(.5f);
+
+		state = States.ENEMYCHOICE;
+		waiting = false;
 	}
 
 
@@ -385,11 +402,27 @@ public class UIManagerScript : MonoBehaviour {
 			if (currentChara.horny > 80) {
 				combatLog.logText (currentChara.getName () + " is too horny to attack!");
 			} else {
+				Attack attack = currentChara.getRandomAttack ();
 				currentUI.GetComponent<Animator> ().Play ("Attack");
-				combatLog.logEnemyText (currentChara.getName () + " attacks you with the force of a thousand suns.");
-				dealDamageParty (0);
+				combatLog.logEnemyText (currentChara.getName () + attack.getFlavorText());
+				if (attack.type == Attack.TYPE.DAMAGE) {dealDamageParty (0, (int)(attack.getDamage() * currentChara.attack));}
+				if (attack.type == Attack.TYPE.HEAL) {healEnemy((int)(attack.getDamage() * currentChara.attack));}
+
+
+		//		dealDamageParty (0);
 			}
 		}
+	
+	}
+
+	void healEnemy(int heal){
+		int random = Random.Range (0, enemyMap.Count);
+
+		if (((Chara_UI_Map)enemyMap [random]).getCharacter ().alive) {
+			((Chara_UI_Map)enemyMap [random]).getCharacter ().heal (heal);
+		} else
+			healEnemy (heal);
+
 	}
 
 
@@ -403,6 +436,7 @@ public class UIManagerScript : MonoBehaviour {
 	IEnumerator Lose() {
 
 		yield return new WaitForSeconds(.5f);
+		Destroy( GameObject.Find("MapManager"));
 		SceneManager.LoadScene ("LoseScene");
 
 	}
@@ -415,7 +449,7 @@ public class UIManagerScript : MonoBehaviour {
 
 	IEnumerator delayedRecruit(int id) {
 		yield return new WaitForSeconds(.3f);
-		if (Random.Range (0, 3) == 1) {
+		if (Random.Range (0, 3) == 1 & id != 1) {
 
 			combatLog.logText (" The enemy decides to join you. ");
 			PlayerPrefs.SetInt ("" + id, 1);

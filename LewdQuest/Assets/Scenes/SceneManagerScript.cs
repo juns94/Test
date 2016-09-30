@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class SceneManagerScript : MonoBehaviour {
 
@@ -13,6 +14,8 @@ public class SceneManagerScript : MonoBehaviour {
 	private GameObject enemyPanel;
 	private CombatLog combatLog;
 	private GameObject fuckButton;
+	private GameObject fuckpanel;
+	private Sprite firstSprite;
 	public  States state;
 	public  string[] sceneParts;
 	int currentScenePosition = 0;
@@ -35,16 +38,15 @@ public class SceneManagerScript : MonoBehaviour {
 	public void startManager() {
 
 		Destroy(enemyPanel.GetComponentsInChildren<Transform>()[1].gameObject);
-		GameObject fuckpanel = GameObject.Find("fuckPanel");
-		fuckpanel.GetComponentsInChildren<Image>()[1].sprite =  Resources.Load <Sprite> (scene.image);
+		fuckpanel = GameObject.Find("fuckPanel");
 		Transform transform = fuckpanel.transform;
 		transform.localPosition = new Vector3(transform.position.x,transform.position.y,27);
 		fuckpanel.transform.parent = enemyPanel.transform;
 		sceneParts 		= scene.sceneText.Split ('|');
 		LewdUtilities.deleteAllButtons (partyPanel);
 		advanceScene (0); // Comienza a ver la escena.
-
-
+		firstSprite =  Resources.Load <Sprite> (scene.image);
+		fuckpanel.GetComponentsInChildren<Image>()[1].sprite = firstSprite;
 
 
 
@@ -74,6 +76,20 @@ public class SceneManagerScript : MonoBehaviour {
 			combatLog.clear ();
 			combatLog.logText (sceneParts[newPosition]);
 			makeNextButton ();
+		}
+
+		try{
+			Sprite tempSprite = Resources.Load <Sprite> (scene.image+newPosition);
+			if(tempSprite != null){
+				fuckpanel.GetComponentsInChildren<Image>()[1].sprite =  Resources.Load <Sprite> (scene.image+newPosition);
+			}
+			else{
+				fuckpanel.GetComponentsInChildren<Image> () [1].sprite = firstSprite;
+			}
+		}
+		catch(Exception e){
+			Debug.Log ("el exeption");
+
 		}
 	}
 

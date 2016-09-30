@@ -96,6 +96,15 @@ public class CombatLog : MonoBehaviour {
 
 	}
 
+
+	public void logGreen(string newText){
+
+
+		text.text += "\n\n<color=#008000ff>" +newText + "</color>\n";
+
+			return;
+		}
+
 	public void logGreen(string name, bool female){
 		
 

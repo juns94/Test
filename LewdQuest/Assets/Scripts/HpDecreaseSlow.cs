@@ -26,37 +26,70 @@ public class HpDecreaseSlow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-
-		if (lastHp > currentHp)
-			CreateDamagePopup (lastHp-currentHp);
+//		image.transform.localScale = new Vector3 (currentHp / totalHp, 1, 1);
+//		/*
+		if (lastHp > currentHp) {	CreateDamagePopup (lastHp - currentHp);}
 
 		float currentDamageDealt = totalHp - currentHp;
 		lastHp = currentHp;
-		//Debug.Log ("dealt" + dealt + " y total" + currentDamageDealt);
+
+
 		if (currentDamageDealt > dealt) {
-
-
 			image.transform.localScale = new Vector3 ((totalHp - dealt) / totalHp, 1, 1);
 			dealt += 0.1f * factor;
 			factor += 0.4f;
 		} else {
+			factor = 1;
+			if (currentDamageDealt < dealt) {
+				image.transform.localScale = new Vector3 (currentHp / totalHp, 1, 1);
+			}
+		}
+	
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		/*
+		float difference = 0 ;
+		if (lastHp > currentHp) {
+			CreateDamagePopup (lastHp - currentHp);
+			difference = currentHp - totalHp ;
+		} else {
+			if (lastHp < currentHp) {
+				difference = totalHp - currentHp;
+			}
+		}
+			
+		if(difference != 0 & (difference < 100))Debug.Log (difference);
+		float target = totalHp - difference;
+		float currentDamageDealt = totalHp - currentHp;
+
+		if (currentDamageDealt > dealt) {
+			image.transform.localScale = new Vector3 ((totalHp - dealt) / totalHp, 1, 1);
+			dealt += 0.1f* factor;
+			factor += 0.2f;
+		} else {
 			factor = 1;
 
-
-		}
-		/*
-		if (((totalHp - dealt) / totalHp > 0) && ((totalHp - dealt) / totalHp) < 0.05) {
-			Debug.Log (" TA MUERLTO ");
-			image.transform.localScale = new Vector3 (0, 1, 1);
-		}
-/*/
-
-		if (currentHp < 5) {
-
-		//	blink ();
-		}
+			if (currentDamageDealt < dealt) {
+				image.transform.localScale = new Vector3 (currentHp / totalHp, 1, 1);
+			}
+	
+		}*/
 
 	
 	}
@@ -83,9 +116,7 @@ public class HpDecreaseSlow : MonoBehaviour {
 
 
 	public void CreateDamagePopup(float damage){
-		GameObject damageGameObject = (GameObject)Instantiate(damagePrefab,
-			initialPosition.position,
-			initialPosition.rotation);
+		GameObject damageGameObject = (GameObject)Instantiate(damagePrefab,initialPosition.position,initialPosition.rotation);
 		damageGameObject.transform.parent = gameObject.transform.parent.transform;
 		damageGameObject.transform.localScale = Vector3.one;
 		damageGameObject.GetComponentInChildren<Text>().text = damage.ToString();

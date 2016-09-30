@@ -4,15 +4,25 @@ using System.Collections;
 public class Attack  {
 
 	string name;
-	int damage;
-	string flavorText;
+	float damage;
+	string flavorText { set; get; }
+	public TYPE type { get; set; }
 
 
-	public Attack(string name, int damage , string flavorText){
+	public enum TYPE{
+		DAMAGE,
+		HEAL,
+		BUFF,
+		LEWD
+	}
+
+
+	public Attack(string name, float damage , string flavorText , TYPE type){
 
 		this.name = name;
 		this.damage = damage;
 		this.flavorText = flavorText;
+		this.type = type;
 	}
 
 
@@ -20,14 +30,12 @@ public class Attack  {
 		return name;
 	}
 
-	public int getDamage(){
+	public float getDamage(){
 		return damage;
 	}
 
 	public string getFlavorText() { return this.flavorText;}
 
-
-	public bool gone { get; set; }
 
 
 
