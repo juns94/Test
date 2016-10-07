@@ -20,8 +20,10 @@ public class UIManagerScript : MonoBehaviour {
 	GameObject mapManager;
 	GameObject itemPanel;
 
-	public bool safe = true;
+	public GameObject partyInfo;
 
+	public bool safe = true;
+	public Texture2D fadeOutTexture;
 	public enum States {
 		START,
 		PLAYERCHOICE,
@@ -33,7 +35,25 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	States state;
+
+
+	void onGUI(){
+
+		/*
+		alpha += fadeDirection * fadeSpeed * Time.deltaTime; 
+		alpha = Mathf.Clamp01 (alpha);
+
+		
+		*/
+			
+		GUI.DrawTexture (new Rect (Screen.width/2, Screen.height/2, 3000, 3000), fadeOutTexture, ScaleMode.StretchToFill);
+
+	}
+
+
 	void Start () {
+
+
 		int region = 0;
 		mapManager = GameObject.Find("MapManager");
 		if (mapManager != null) {
@@ -57,9 +77,9 @@ public class UIManagerScript : MonoBehaviour {
 			newItem.transform.localScale 	= Vector3.one;
 			newItem.transform.localPosition = Vector3.zero;
 			if (safe) {
-				character = reRollCharacter (EnemyCreator.create (region));
+				character = reRollCharacter (EnemyCreator.create (region, -1));
 			} else {
-				EnemyCreator.create (4);
+				EnemyCreator.create (4,-1);
 			}
 			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
@@ -73,9 +93,12 @@ public class UIManagerScript : MonoBehaviour {
 		for (int x = 0; x < partyNumber; x++) {
 			GameObject item = GameObject.Find ("hpCombo");
 			Character character = new Character (0, "Yourself", 230, 1, 1, 1, "", false);
-			character.hp = PlayerPrefs.GetInt ("hp", 250);
+			character.hp = PlayerPrefs.GetInt ("hp", 230);
 			partyMap.Add(new Chara_UI_Map(item, character ));
 		}
+
+
+	//	gameObject.GetComponent<Fading> ().beginFade (1);
 			
 
 	}
@@ -84,7 +107,7 @@ public class UIManagerScript : MonoBehaviour {
 		if (character.female) {
 
 			while (isAlreadyInBattle (character)) {
-				character = EnemyCreator.create (Random.Range (0, 2));
+				character = EnemyCreator.create (Random.Range (0, 2),-1);
 			}
 
 		} else {
@@ -102,6 +125,14 @@ public class UIManagerScript : MonoBehaviour {
 	
 
 	void Update () {
+
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Destroy (GameObject.Find ("MapManager"));
+			SceneManager.LoadScene ("MapScene");
+
+		}
+			
 
 
 		switch (state) {
@@ -187,8 +218,9 @@ public class UIManagerScript : MonoBehaviour {
 
 
 						if (!fightFinished) {
-							
-							GameObject panel 				= GameObject.Find ("PartyInfo");
+
+							GameObject panel = partyInfo;
+							//GameObject panel 				= GameObject.Find ("PartyInfo");
 							LewdUtilities.deleteAllButtons (panel);
 
 							GameObject exit 				= Instantiate (fuckButton);
@@ -286,7 +318,8 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	public void openFuckPanel(Character character){
-		GameObject panel  = GameObject.Find ("PartyInfo");
+		GameObject panel = partyInfo;
+		//GameObject panel  = GameObject.Find ("PartyInfo");
 		LewdUtilities.deleteAllButtons (panel);
 		Scene scene = LewdSceneManager.getSceneFromId (character.id, character.horny);
 
@@ -383,7 +416,7 @@ public class UIManagerScript : MonoBehaviour {
 			//character.receiveDamage (Random.Range(4,7));
 			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
-			combatLog.logText ("You use the "+ " on " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
+			combatLog.logText ("You use the "+ " on " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +".");
 		}
 		yield return new WaitForSeconds(.5f);
 
@@ -434,8 +467,9 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	IEnumerator Lose() {
-
-		yield return new WaitForSeconds(.5f);
+		float delta;
+		//delta = gameObject.GetComponent<Fading> ().beginFade (1);
+		yield return new WaitForSeconds(1f);
 		Destroy( GameObject.Find("MapManager"));
 		SceneManager.LoadScene ("LoseScene");
 
@@ -465,7 +499,8 @@ public class UIManagerScript : MonoBehaviour {
 
 		}
 
-		GameObject panel  = GameObject.Find ("PartyInfo");
+		GameObject panel = partyInfo;
+		//GameObject panel  = GameObject.Find ("PartyInfo");
 	
 			for (int x = 0; x < 1; x++) {
 				GameObject button = Instantiate (fuckButton);

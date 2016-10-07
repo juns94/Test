@@ -66,7 +66,7 @@ public class createPanel : MonoBehaviour {
 			if (enemyMap.Count > 1 & aliveCount () > 1) {
 
 				popUp = Instantiate (panel);
-				popUp.transform.parent = gameObject.transform;
+				popUp.transform.SetParent(gameObject.transform);
 				popUp.transform.localScale = Vector3.one;
 				popUp.transform.localPosition = new Vector3 (gameObject.transform.position.x + 170, gameObject.transform.position.y, 0);
 				popUp.transform.parent = empty.transform;

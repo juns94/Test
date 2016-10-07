@@ -3,16 +3,21 @@ using System.Collections;
 
 public class EnemyCreator {
 
-	public static Character create(int region){
+	public static Character create(int region, int absoluteId){
 
+		int id;
 
-		int id = getIdByRegion (region);
-		Debug.Log (" El id generado inicialmente es " + id+ " y lo tenia: " + PlayerPrefs.GetInt(id+"",0));
-		if (PlayerPrefs.GetInt( ""+id , 0 ) > 0) {
-			////// IF THE ENEMY HAS ALREADY BEEN RECRUITED!!!!
-			id = reRollId (region, id);
+		if (absoluteId == -1) {
+			id = getIdByRegion (region);
+			Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
+			if (PlayerPrefs.GetInt ("" + id, 0) > 0) {
+				////// IF THE ENEMY HAS ALREADY BEEN RECRUITED!!!!
+				id = reRollId (region, id);
+			}
+
+		} else {
+			id = absoluteId;
 		}
-
 	//	Debug.Log (" El id final generado fue " + id);
 		switch (id) {
 
@@ -36,11 +41,14 @@ public class EnemyCreator {
 			return new Character (id, "Winter", 60, 1, 15,  5, "_winter", true , "4");
 			break;
 		case 11:
-			return new Character (id, "Lamia Hoplite", 70, 1, 15,  5, "_lamia", true , "7,1");
+			return new Character (id, "Lamia Hoplite", 70, 1, 15,  5, "_hoplite", true , "7,1");
+			break;
+		case 12:
+			return new Character (id, "Twisted Tree", 50, 20, 5, 10, "_twisted_tree", false , "6");
 			break;
 
 
-		default : return create(region);
+		default : return create(region,-1);
 			
 		
 		}
@@ -113,7 +121,7 @@ public class EnemyCreator {
 		
 		while (isAlreadyOwned(id)) {
 			//Debug.Log ("Loop");
-			id = (Random.Range (0, 4));
+			id = getIdByRegion(region);// (Random.Range (0, 4));
 		}
 
 		return id;

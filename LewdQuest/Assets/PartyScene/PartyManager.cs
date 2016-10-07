@@ -114,7 +114,7 @@ public class PartyManager : MonoBehaviour {
 
 
 	public void goToMapScene(){
-
+		Destroy( GameObject.Find("MapManager"));
 		SceneManager.LoadScene ("MapScene");
 
 	}

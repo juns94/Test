@@ -117,7 +117,7 @@ public class HpDecreaseSlow : MonoBehaviour {
 
 	public void CreateDamagePopup(float damage){
 		GameObject damageGameObject = (GameObject)Instantiate(damagePrefab,initialPosition.position,initialPosition.rotation);
-		damageGameObject.transform.parent = gameObject.transform.parent.transform;
+		damageGameObject.transform.SetParent( gameObject.transform.parent.transform);
 		damageGameObject.transform.localScale = Vector3.one;
 		damageGameObject.GetComponentInChildren<Text>().text = damage.ToString();
 	}
