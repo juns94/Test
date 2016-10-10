@@ -10,7 +10,7 @@ public class EventManager : MonoBehaviour {
 	public GameObject mainImage;
 	public GameObject textPanel;
 	public GameObject buttonPanel;
-
+	public ItemManager itemManager;
 
 	public void REEEE(){
 
@@ -30,6 +30,7 @@ public class EventManager : MonoBehaviour {
 		currentEvent.buttonPanel 	= buttonPanel;
 		currentEvent.textPanel		= textPanel;
 		currentEvent.mainImage		= mainImage;
+		currentEvent.itemManager 	= itemManager;
 		currentEvent.prepareScene ();
 	
 	}
@@ -64,6 +65,10 @@ public class EventManager : MonoBehaviour {
 		}
 		return null;
 
+	}
+
+	public ItemManager getItemManager(){
+		return itemManager;
 	}
 
 }

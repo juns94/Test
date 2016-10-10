@@ -18,7 +18,7 @@ public class Character  {
 	public string image { get; set; }
 	public bool alreadyAttacked { get; set; }
 	public bool female { get; set; }
-
+	public int[] itemPool;
 
 	public List<Attack> attackList { get; set; }
 
@@ -66,6 +66,28 @@ public class Character  {
 		}
 
 	}
+
+
+	public Character(int id, string name,int hp , int level, int attack , int magicPower, string image , bool female , string attacks, int[] pool){
+		this.id = id;
+		this.hp = hp;
+		this.totalHP = hp;
+		this.name = name;
+		this.level = level;
+		this.attack = attack;
+		this.magicPower = magicPower;
+		this.image = image;
+		this.female = female;
+		attackList = new List<Attack> ();
+		this.itemPool = pool;
+		string[] temp = attacks.Split(',');
+		for (int x = 0; x < temp.Length; x++) {
+			attackList.Add (AttackPool.createAttack(int.Parse(temp[x])));
+		}
+
+
+	}
+
 
 
 

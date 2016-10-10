@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using UnityEngine.SceneManagement;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class ItemManager : MonoBehaviour {
 
@@ -22,21 +24,33 @@ public class ItemManager : MonoBehaviour {
 
 
 	void Start () {
-		itemPanel 			= GameObject.Find ("ItemPanel");
+	//	PlayerPrefs.SetString ("items", "0,4;1,2;2,1;3,10");
+		//PlayerPrefs.Save ();
+	
+		//itemPanel 			= GameObject.Find ("ItemPanel");
 		itemContainer 		= itemPanel.transform.GetChild (0).gameObject;
 		allItemString	 	= "0,4;1,2;2,1;3,10";
-		itemCombo 			= allItemString.Split (';');
 		panelCreator 		= GetComponent<createSelectPanel> ();
 		itemsArray 			= new ArrayList();
+		allItemString 		= PlayerPrefs.GetString ("items","");
+
+		itemCombo 			= allItemString.Split (';');
+	
+
+
 
 		if (panelCreator == null) {
 			panelCreatorMap = GetComponent<createSelectPanelMap> ();
 		}
 
 
+
 		for ( int x = 0; x < itemCombo.Length ; x++) {
+			//	Debug.Log (" intento parsear :" + itemCombo [x].Split (',') [0]);
+			if((itemCombo[x])!= ""){
+			int id	 										= int.Parse(itemCombo [x].Split (',') [0]);
 			int itemAmount 									= int.Parse(itemCombo [x].Split (',') [1]);
-			Item item 										= ItemCreator.createItem(x, itemAmount);
+			Item item 										= ItemCreator.createItem(id, itemAmount);
 			GameObject temp 								= Instantiate(itemUI);
 			temp.transform.parent 							= itemContainer.transform;
 			temp.transform.localScale 						= Vector3.one;
@@ -58,6 +72,7 @@ public class ItemManager : MonoBehaviour {
 			item.uiRef = temp;
 			itemsArray.Add (item);
 
+			}
 
 		}
 
@@ -78,6 +93,12 @@ public class ItemManager : MonoBehaviour {
 	
 
 	void Update () {
+
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Destroy (GameObject.Find ("MapManager"));
+			SceneManager.LoadScene ("MapScene");
+		}
 	
 	}
 
@@ -101,18 +122,63 @@ public class ItemManager : MonoBehaviour {
 		item.uiRef.GetComponentsInChildren<Text> () [1].text = item.amount + "x";
 		if (item.amount == 0) {
 			Destroy (item.uiRef);
+			itemsArray.Remove (item);
 		}
-
+		saveCurrentInventory ();
 	}
 
 
 	public Item getItemById(int itemId){
 
-		for (int x = 0; x < itemCombo.Length; x++) {
+//		Debug.Log (itemCombo.Length);
+//		Debug.Log (((Item)itemsArray [0]).id);
+		for (int x = 0; x < itemsArray.Count; x++) {
+
 			if (((Item)itemsArray [x]).id == itemId)
-				return (Item) itemsArray [x];
+				return ((Item)itemsArray [x]);
 		}
 
-		return new Item (0, "NULL", 0);
+		return null;
 		}
+
+
+
+
+	public string AddItemToInventory( int id , int amount ){
+
+
+		string currentItemList = PlayerPrefs.GetString ("items", "");
+		//ArrayList items =
+
+		string result = "";
+		Debug.Log (" intento agregar " + id);
+		Item item = getItemById (id) ;
+		if (item != null) {
+			item.amount += amount;
+			result = item.name;
+		} else {
+			Item temp = ItemCreator.createItem (id, amount);
+			itemsArray.Add (temp);
+			result = temp.name;
+		}
+
+
+		saveCurrentInventory ();
+		return result;
+
+
+
+	}
+
+	public void saveCurrentInventory(){
+
+		string newItemList = "";
+		for (int x = 0; x < itemsArray.Count; x++) {
+			Item temp = (Item)itemsArray [x];
+			newItemList += temp.id + "," + temp.amount + ";";
+		}
+		PlayerPrefs.SetString ("items", newItemList);
+		Debug.Log("salvo :" +newItemList);
+		PlayerPrefs.Save ();
+	}
 }

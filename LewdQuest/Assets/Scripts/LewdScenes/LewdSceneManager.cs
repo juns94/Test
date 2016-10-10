@@ -8,12 +8,15 @@ public class LewdSceneManager{
 	public static Scene getSceneFromId(int id , int horny){
 		switch(id){
 		case 1:
-			if (horny > 70)
+			if (horny > 70) {
+				
 				return new OrbScene ().orbFuck ();
-			else
+			} else {
 				return null;
+			}
+			
 		case 0:	
-			return null;//new //AureliaScene().buttFuck();
+			return new AureliaScene().titFuck();
 
 		case 2:
 			return new LidiaScene().buttFuck();

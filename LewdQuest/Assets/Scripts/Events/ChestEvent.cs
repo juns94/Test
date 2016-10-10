@@ -83,13 +83,14 @@ public class ChestEvent : Event {
 
 
 		case 0:{
-			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + 100);
+				PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + 100);
 				return "\n Inside the chest you find 100 gold pieces. You add them into your pouch happily";
 				break;
 			}
 		case 1:{
 				//TODO HACER QUE LE DE LO QUE DICE AHI
 				//	PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + 100);
+				itemManager.AddItemToInventory(4,1);
 				return "\n Inside the chest you find a potion of strength. You carefully put it in your inventory.";
 				break;
 			}
@@ -101,7 +102,7 @@ public class ChestEvent : Event {
 				if(newHp <= 0) newHp = 1;
 					PlayerPrefs.SetInt ("hp", newHp);
 
-				return "\n The chest was <b>rigged!</b> You trigger the trap mechanism and a toxic gas emanates from the edges of the wood. You suffer <b>HEAVY</b> damage.";
+				return "\n The chest was <b>rigged!</b> You trigger the trap mechanism and a toxic gas emanates from the edges of the wood. You suffer <b>HEAVY</b> damage. ( You lose half of your HP )";
 					break;
 				
 			}
@@ -123,8 +124,7 @@ public class ChestEvent : Event {
 				break;
 			}
 		case 1:{
-				//TODO HACER QUE LE DE LO QUE DICE AHI
-				//	PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + 100);
+				itemManager.AddItemToInventory(4,1);
 				return "\n Inside the chest you find a potion of strength. You carefully put it in your inventory.";
 				break;
 			}
@@ -133,7 +133,7 @@ public class ChestEvent : Event {
 
 		case 2:{
 				//PlayerPrefs.SetInt ("hp", newHp);
-
+				itemManager.AddItemToInventory(0,1);
 				return "\n The chest was <b>rigged!</b> , but Lidia was cunning enough to see through this and she disabled the trap before anything could happen. She even discovers hidden loot " +
 					"on a secret spot. The item being protected was nothing but an HP+ potion.";
 				break;

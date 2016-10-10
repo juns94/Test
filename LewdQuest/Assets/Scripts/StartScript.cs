@@ -13,6 +13,7 @@ public class StartScript : MonoBehaviour {
 	
 		Invoke ("startAnimation", 1f);
 		Invoke ("displayButtons", 2.5f);
+		PlayerPrefs.SetString("items","0,4;1,2;2,1;3,10")	;
 	}
 	
 	// Update is called once per frame

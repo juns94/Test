@@ -19,11 +19,10 @@ public class UIManagerScript : MonoBehaviour {
 	bool fightFinished = false;
 	GameObject mapManager;
 	GameObject itemPanel;
-
+	public ItemManager itemManager;
 	public GameObject partyInfo;
 
 	public bool safe = true;
-	public Texture2D fadeOutTexture;
 	public enum States {
 		START,
 		PLAYERCHOICE,
@@ -46,7 +45,6 @@ public class UIManagerScript : MonoBehaviour {
 		
 		*/
 			
-		GUI.DrawTexture (new Rect (Screen.width/2, Screen.height/2, 3000, 3000), fadeOutTexture, ScaleMode.StretchToFill);
 
 	}
 
@@ -202,6 +200,9 @@ public class UIManagerScript : MonoBehaviour {
 
 			if (!currentChara.getAlive())  {  ////// SI ESTA MUERTO, SIN IMPORTAR LA POSICION!!!!
 
+
+			
+
 				if (LewdUtilities.aliveCount (this) == 0 & lastAlivePosition == x) {
 					/// This is called if the enemy is alone and it's qt grill
 					/// 
@@ -234,6 +235,9 @@ public class UIManagerScript : MonoBehaviour {
 
 							});
 							fightFinished = true;
+
+							attemptGetItem (currentChara);
+
 						}
 
 					}
@@ -245,7 +249,7 @@ public class UIManagerScript : MonoBehaviour {
 
 				if (!currentChara.gone) {
 					if(images != null)
-					images [3].CrossFadeAlpha (0.0f, 0.3f, false);
+						images [3].CrossFadeAlpha (0.0f, 0.3f, false);
 					currentUI.GetComponent<Animator> ().Play ("Dead");
 					combatLog.logEnemyDeath (currentChara.getName () , currentChara.female);
 					currentChara.gone = true;
@@ -395,7 +399,7 @@ public class UIManagerScript : MonoBehaviour {
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
-			character.receiveDamage (Random.Range(3 , 8));
+			character.receiveDamage (Random.Range(3 , 8) + 20);
 			//character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
@@ -576,5 +580,26 @@ public class UIManagerScript : MonoBehaviour {
 		combatLog.logText ("You attempt to recruit the enemy as part of your harem");
 		combatLog.logSlowly ("...................................");
 		StartCoroutine ("delayedRecruit",id);
+	}
+
+
+
+	public void attemptGetItem(Character character){
+
+
+		Debug.Log (character.itemPool);
+		if (character.itemPool != null) {
+			string name = itemManager.AddItemToInventory (Random.Range (0, character.itemPool.Length),1);
+			combatLog.logGreen (" You received a drop of :<b>" + name + "</b>.");
+		} else {
+
+			int money = (character.attack + character.getTotalHp () + character.horny) / 2;
+			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + money);
+			combatLog.logGreen (" You received <b>" + money + "</b> gold pieces.");
+		}
+			
+		itemManager.saveCurrentInventory ();
+		PlayerPrefs.Save ();
+
 	}
 }

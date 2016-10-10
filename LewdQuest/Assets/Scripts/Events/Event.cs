@@ -8,6 +8,7 @@ public abstract class Event : MonoBehaviour {
 	public GameObject 	buttonPanel	{ get; set; }
 	public GameObject 	textPanel	{ get; set; }
 	public GameObject 	mainImage	{ get; set; }
+	public ItemManager	itemManager { get; set; }
 	//public string image { get; set; }
 
 

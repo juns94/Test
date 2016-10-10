@@ -21,7 +21,12 @@ public class ItemCreator {
 		case 3:
 			return new Item (id, "Horny Potion"		,amount);
 			break;
-
+		case 4:
+			return new Item (id, "Strength Potion"	,amount);
+			break;
+		case 5:
+			return new Item (id, "Mage Potion"	,amount);
+			break;
 
 		}
 		return null;
@@ -43,6 +48,13 @@ public class ItemCreator {
 		case 3:
 			character.makeHorny(30);
 			break;
+		case 4:
+			character.attack 		+= 10;
+			break;
+		case 5:
+			character.magicPower 	+= 10;
+			break;
+		
 		}
 
 	}

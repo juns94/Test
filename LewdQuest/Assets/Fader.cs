@@ -34,7 +34,7 @@ public class Fader : MonoBehaviour {
 	public float BeginFade (int direction)
 	{
 		fadeDir = direction;
-		return (fadeSpeed);
+			return (fadeSpeed);
 	}
 
 	public  float StartFade ()

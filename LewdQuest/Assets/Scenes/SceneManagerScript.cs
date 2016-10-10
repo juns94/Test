@@ -49,6 +49,8 @@ public class SceneManagerScript : MonoBehaviour {
 		fuckpanel.GetComponentsInChildren<Image>()[1].sprite = firstSprite;
 
 
+		Debug.Log (sceneParts.Length);
+
 
 
 
@@ -70,7 +72,9 @@ public class SceneManagerScript : MonoBehaviour {
 
 	public void advanceScene(int newPosition){
 		LewdUtilities.deleteAllButtons (partyPanel);
-		if (newPosition == sceneParts.Length) {
+		if (newPosition == sceneParts.Length-1) {
+			combatLog.clear ();	
+			combatLog.logText (sceneParts[newPosition]);
 			makeExitButton ();
 		} else {
 			combatLog.clear ();

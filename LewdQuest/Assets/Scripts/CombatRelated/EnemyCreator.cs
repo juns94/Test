@@ -7,9 +7,10 @@ public class EnemyCreator {
 
 		int id;
 
+
 		if (absoluteId == -1) {
 			id = getIdByRegion (region);
-			Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
+			//Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
 			if (PlayerPrefs.GetInt ("" + id, 0) > 0) {
 				////// IF THE ENEMY HAS ALREADY BEEN RECRUITED!!!!
 				id = reRollId (region, id);
@@ -31,20 +32,20 @@ public class EnemyCreator {
 			return new Character (id, "Lidia", 30, 1, 10, 10, "_lidia", true , " 0,5");
 			break;
 		case 4:
-			return new Character (id, "Twisted Tree", 30, 20, 5, 10, "_twisted_tree", false , "6");
+			return new Character (id, "Twisted Tree", 30, 20, 5, 10, "_twisted_tree", false , "6" , new int[2]{0,1});
 			break;
 		case 5:
-			return new Character (id, "Thystle", 30, 1, 5, 20, "_thystle", true , "0,1,2");
+			return new Character (id, "Thystle", 30, 1, 5, 20, "_thystle", true , "0,1,2", new int[2]{0,1});
 			break;
 		
 		case 10:
-			return new Character (id, "Winter", 60, 1, 15,  5, "_winter", true , "4");
+			return new Character (id, "Winter", 60, 1, 15,  5, "_winter", true , "4", new int[1]{2});
 			break;
 		case 11:
-			return new Character (id, "Lamia Hoplite", 70, 1, 15,  5, "_hoplite", true , "7,1");
+			return new Character (id, "Lamia Hoplite", 70, 1, 15,  5, "_hoplite", true , "7,1", new int[1]{2});
 			break;
 		case 12:
-			return new Character (id, "Twisted Tree", 50, 20, 5, 10, "_twisted_tree", false , "6");
+			return new Character (id, "Twisted Tree", 50, 20, 5, 10, "_twisted_tree", false , "6" , new int[1]{0});
 			break;
 
 
