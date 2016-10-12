@@ -151,6 +151,7 @@ public class ItemManager : MonoBehaviour {
 		//ArrayList items =
 
 		string result = "";
+
 		Debug.Log (" intento agregar " + id);
 		Item item = getItemById (id) ;
 		if (item != null) {

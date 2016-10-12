@@ -13,6 +13,7 @@ public class MapUIManager : MonoBehaviour {
 	public GameObject hpGUI;
 	public GameObject energyGUI;
 	public GameObject itemUI;
+	public GameObject goldUI;
 	GameObject itemPanel;
 	void Start () {
 
@@ -37,6 +38,8 @@ public class MapUIManager : MonoBehaviour {
 		energyGUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)PlayerPrefs.GetInt ("energy", 100), totalEnergy);
 		energyGUI.GetComponentInChildren<Text>().text = PlayerPrefs.GetInt ("energy", 100) + "/" + totalEnergy;
 
+
+		goldUI.GetComponentsInChildren<Text> () [0].text = PlayerPrefs.GetInt ("gold", 0) + "";
 
 	}
 

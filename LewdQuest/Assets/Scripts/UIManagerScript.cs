@@ -587,8 +587,7 @@ public class UIManagerScript : MonoBehaviour {
 	public void attemptGetItem(Character character){
 
 
-		Debug.Log (character.itemPool);
-		if (character.itemPool != null) {
+		if (character.itemPool != null & (Random.Range(0,3) == 2)) {
 			string name = itemManager.AddItemToInventory (Random.Range (0, character.itemPool.Length),1);
 			combatLog.logGreen (" You received a drop of :<b>" + name + "</b>.");
 		} else {
