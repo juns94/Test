@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class Character  {
 
 
@@ -19,6 +20,7 @@ public class Character  {
 	public bool alreadyAttacked { get; set; }
 	public bool female { get; set; }
 	public int[] itemPool;
+
 
 	public List<Attack> attackList { get; set; }
 

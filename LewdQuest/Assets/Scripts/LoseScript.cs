@@ -19,7 +19,7 @@ public class LoseScript : MonoBehaviour {
 	public void retry (){
 
 		SceneManager.LoadScene ("MapScene");
-		PlayerPrefs.SetInt ("hp", 230);
+		PlayerPrefs.SetInt ("hp",HeroUtils.getTotalHP());
 
 	}
 }

@@ -5,21 +5,24 @@ using UnityEngine.SceneManagement;
 public class PartyManager : MonoBehaviour {
 
 
-	GameObject partyBench;
-	GameObject bench;
 	ArrayList bitches;
 	ArrayList partyBitches;
+	GameData gameData;
 	public GameObject miniSlot;
 	public GameObject slot;
 	public GameObject item;
-	private GameObject detailPanel;
-	void Start () {
-		partyBench 		= GameObject.Find ("PartyBench");	
-		bench 			= GameObject.Find ("Bench");
-		bitches 		= getBitches();
-		partyBitches 	= getPartyBitches ();
-		detailPanel 	= GameObject.Find ("DetailPanel");
+	public GameObject detailPanel;
+	public GameObject partyBench;
+	public GameObject bench;
 
+	void Start () {
+
+		gameData 		= GameObject.Find ("GameData").GetComponent<GameDataContainer>().getData();
+		bitches 		= getBitches();
+		partyBitches 	= getPartyBitches ();/*
+		detailPanel 	= GameObject.Find ("DetailPanel");
+		partyBench 		= GameObject.Find ("PartyBench");	
+		bench 			= GameObject.Find ("Bench");*/
 		for (int x = 0; x < 3; x++) {
 			GameObject go;
 			go = Instantiate (slot);
@@ -52,7 +55,7 @@ public class PartyManager : MonoBehaviour {
 			int totalPartyBitches = partyBitches.Count;
 			if ((x+1) <= totalPartyBitches) {
 				
-				Character character = ((Character)partyBitches [x]);
+				Character character = gameData.getCharacterById (((Character)partyBitches[x]).id);
 				GameObject slotItem = Instantiate (item);
 				slotItem.name = character.id + "";
 				slotItem.GetComponentInChildren<Text> ().text = character.name;
@@ -82,7 +85,7 @@ public class PartyManager : MonoBehaviour {
 		for (int x = 0; x < 100; x++) {
 			if (PlayerPrefs.GetInt (x + "", 0) == 1) {
 				Debug.Log (" encontro al id " + x);
-				temp.Add(EnemyCreator.createOwned(x));
+				temp.Add(EnemyCreator.create(0,x));
 			}
 		}
 		return temp;
@@ -92,7 +95,7 @@ public class PartyManager : MonoBehaviour {
 		ArrayList temp = new ArrayList ();
 		for (int x = 0; x < 100; x++) {
 			if (PlayerPrefs.GetInt (x + "", 0) == 2) {
-				temp.Add(EnemyCreator.createOwned (x));
+				temp.Add(EnemyCreator.create (0,x));
 			}
 		}
 		return temp;
@@ -108,7 +111,7 @@ public class PartyManager : MonoBehaviour {
 		details [0].text = "Name: "+character.name;
 		details [1].text = "Obedience: "+character.obedience;
 		details [2].text = "Horny: "+character.horny;
-		details [3].text = "HP: "+character.totalHP;
+		details [3].text = "HP: "+ character.hp + "/" +character.totalHP;
 
 	}
 

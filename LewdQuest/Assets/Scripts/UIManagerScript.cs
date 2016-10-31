@@ -5,20 +5,22 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
 public class UIManagerScript : MonoBehaviour {
-	public GameObject fuckButton;
-	public GameObject itemPrefab;
-	public CombatLog combatLog;
+	public GameObject 	fuckButton;
+	public GameObject 	itemPrefab;
+	public CombatLog 	combatLog;
 	public EnemyCreator enemyCreator;
-	ArrayList partyMap;
-	ArrayList enemyMap;
-	GameObject enemyPanel;
-	public int enemyNumber = 3;
-	int partyNumber = 1;
-	int lastAlivePosition;
-	bool waiting;
-	bool fightFinished = false;
-	GameObject mapManager;
-	GameObject itemPanel;
+	GameData 			gameData;
+	ArrayList 			partyMap;
+	ArrayList 			enemyMap;
+	public int 			enemyNumber = 3;
+	int 		partyNumber = 1;
+	int 		lastAlivePosition;
+	bool 		waiting;
+	bool 		fightFinished = false;
+	GameObject 	enemyPanel;
+	GameObject 	mapManager;
+	GameObject 	itemPanel;
+	GameObject	rigged;
 	public ItemManager itemManager;
 	public GameObject partyInfo;
 
@@ -37,21 +39,12 @@ public class UIManagerScript : MonoBehaviour {
 
 
 	void onGUI(){
-
-		/*
-		alpha += fadeDirection * fadeSpeed * Time.deltaTime; 
-		alpha = Mathf.Clamp01 (alpha);
-
-		
-		*/
-			
-
 	}
 
 
 	void Start () {
 
-
+		gameData = LewdUtilities.getGameData (GameObject.Find ("GameData"));
 		int region = 0;
 		mapManager = GameObject.Find("MapManager");
 		if (mapManager != null) {
@@ -65,23 +58,40 @@ public class UIManagerScript : MonoBehaviour {
 		state 		= States.PLAYERCHOICE;
 		enemyPanel 	= GameObject.Find ("EnemyPanel");
 		itemPanel 	= GameObject.Find ("ItemPanel");
+		rigged 		= GameObject.Find ("scriptedFightObject");
 
-	//	itemPanel.SetActive (false);
-
-		for (int x = 0; x < enemyNumber; x++) {
-			Character character = null;
-			GameObject newItem = Instantiate (itemPrefab) as GameObject;
-			newItem.transform.parent 		= enemyPanel.gameObject.transform;
-			newItem.transform.localScale 	= Vector3.one;
-			newItem.transform.localPosition = Vector3.zero;
-			if (safe) {
-				character = reRollCharacter (EnemyCreator.create (region, -1));
-			} else {
-				EnemyCreator.create (4,-1);
+		if (rigged == null) {
+			for (int x = 0; x < enemyNumber; x++) {
+				Character character = null;
+				GameObject newItem = Instantiate (itemPrefab) as GameObject;
+				newItem.transform.parent = enemyPanel.gameObject.transform;
+				newItem.transform.localScale = Vector3.one;
+				newItem.transform.localPosition = Vector3.zero;
+				if (safe) {
+					character = reRollCharacter (EnemyCreator.create (region, -1), region);
+				} else {
+					character = EnemyCreator.create (4, -1);
+				}
+				newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
+				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> (character.image);
+				enemyMap.Add (new Chara_UI_Map (newItem, character));
 			}
-			newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
-			newItem.GetComponentsInChildren<Image> ()[3].overrideSprite = Resources.Load <Sprite> (character.image);
-			enemyMap.Add(new Chara_UI_Map(newItem, character ));
+		} else {
+			int[] enemyIdArray = rigged.GetComponent<RiggedFight>().enemyIdArray;
+			for (int x = 0; x < enemyIdArray.Length; x++) {
+				Debug.Log (enemyIdArray [x]);
+				Character character 			= null;
+				GameObject newItem 				= Instantiate (itemPrefab) as GameObject;
+				newItem.transform.parent 		= enemyPanel.gameObject.transform;
+				newItem.transform.localScale 	= Vector3.one;
+				newItem.transform.localPosition = Vector3.zero;
+				character 						= EnemyCreator.create (0, enemyIdArray[x]);
+				newItem.GetComponentsInChildren<Text> () 	[2].text = character.getName ();
+				newItem.GetComponentsInChildren<Image> () 	[3].overrideSprite = Resources.Load <Sprite> (character.image);
+				enemyMap.Add (new Chara_UI_Map (newItem, character));
+					
+			}
+			Destroy (rigged);	
 		}
 
 
@@ -90,8 +100,8 @@ public class UIManagerScript : MonoBehaviour {
 
 		for (int x = 0; x < partyNumber; x++) {
 			GameObject item = GameObject.Find ("hpCombo");
-			Character character = new Character (0, "Yourself", 230, 1, 1, 1, "", false);
-			character.hp = PlayerPrefs.GetInt ("hp", 230);
+			Character character = HeroUtils.getHero ();
+			character.hp = PlayerPrefs.GetInt ("hp", 0);
 			partyMap.Add(new Chara_UI_Map(item, character ));
 		}
 
@@ -101,11 +111,11 @@ public class UIManagerScript : MonoBehaviour {
 
 	}
 
-	private Character reRollCharacter(Character character){
+	private Character reRollCharacter(Character character, int region){
 		if (character.female) {
 
 			while (isAlreadyInBattle (character)) {
-				character = EnemyCreator.create (Random.Range (0, 2),-1);
+				character = EnemyCreator.create (region,-1);
 			}
 
 		} else {
@@ -399,7 +409,8 @@ public class UIManagerScript : MonoBehaviour {
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
-			character.receiveDamage (Random.Range(3 , 8) + 20);
+			int attack= ((Chara_UI_Map)partyMap [0]).getCharacter ().attack;
+			character.receiveDamage (Random.Range(attack ,attack + 3));
 			//character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
@@ -437,6 +448,7 @@ public class UIManagerScript : MonoBehaviour {
 			// busca un atack aqui de la lista del
 
 			if (currentChara.horny > 80) {
+				currentUI.GetComponent<Animator> ().Play ("HornyAnimation");
 				combatLog.logText (currentChara.getName () + " is too horny to attack!");
 			} else {
 				Attack attack = currentChara.getRandomAttack ();
@@ -487,17 +499,23 @@ public class UIManagerScript : MonoBehaviour {
 
 	IEnumerator delayedRecruit(int id) {
 		yield return new WaitForSeconds(.3f);
-		if (Random.Range (0, 3) == 1 & id != 1) {
-
+		int position = LewdUtilities.getLastVisiblePosition(this);
+		int hornyCount = 0;
+		if (((Chara_UI_Map)enemyMap [position]).getCharacter ().horny > 70) {
+			hornyCount = 1;
+		}
+		if ((Random.Range (0, 3)+hornyCount) > 1 & id != 1) {
+			
 			combatLog.logText (" The enemy decides to join you. ");
 			PlayerPrefs.SetInt ("" + id, 1);
 			PlayerPrefs.Save ();
+			gameData.addSlut(id);
+			DataAccess.Save (gameData);
 
 
 		} else {
 			
 			combatLog.logText (" The enemy used the chance to run away. ");
-			int position = LewdUtilities.getLastVisiblePosition(this);
 			GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 			currentUI.GetComponent<Animator> ().Play ("Dead");
 

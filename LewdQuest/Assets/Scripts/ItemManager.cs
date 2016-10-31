@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
 
 public class ItemManager : MonoBehaviour {
 
@@ -28,7 +29,11 @@ public class ItemManager : MonoBehaviour {
 		//PlayerPrefs.Save ();
 	
 		//itemPanel 			= GameObject.Find ("ItemPanel");
+		try{
 		itemContainer 		= itemPanel.transform.GetChild (0).gameObject;
+		}catch(Exception e){
+
+		}
 		allItemString	 	= "0,4;1,2;2,1;3,10";
 		panelCreator 		= GetComponent<createSelectPanel> ();
 		itemsArray 			= new ArrayList();
@@ -51,27 +56,49 @@ public class ItemManager : MonoBehaviour {
 			int id	 										= int.Parse(itemCombo [x].Split (',') [0]);
 			int itemAmount 									= int.Parse(itemCombo [x].Split (',') [1]);
 			Item item 										= ItemCreator.createItem(id, itemAmount);
-			GameObject temp 								= Instantiate(itemUI);
-			temp.transform.parent 							= itemContainer.transform;
-			temp.transform.localScale 						= Vector3.one;
-			temp.transform.localPosition 					= Vector3.one;
-			temp.GetComponentsInChildren<Text> ()[0].text 	= item.name;
-			temp.GetComponentsInChildren<Text> ()[1].text 	= itemAmount+"x";
-			temp.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+				if (item.type == Item.TYPE.CONSUMABLE) {
+					GameObject temp = Instantiate (itemUI);
+					temp.transform.parent = itemContainer.transform;
+					temp.transform.localScale = Vector3.one;
+					temp.transform.localPosition = Vector3.one;
+					temp.GetComponentsInChildren<Text> () [0].text = item.name;
+					temp.GetComponentsInChildren<Text> () [1].text = itemAmount + "x";
+
+					EventTrigger.Entry eventEntry = new EventTrigger.Entry ();
+					eventEntry.eventID = EventTriggerType.PointerEnter;
+					eventEntry.callback.AddListener ((eventData) => {
+						temp.GetComponent<OnHoverItem> ().displayText (item.description);
+					});
+
+					EventTrigger.Entry eventExit = new EventTrigger.Entry ();
+					eventExit.eventID = EventTriggerType.PointerExit;
+					eventExit.callback.AddListener ((eventData) => {			
+				
+						temp.GetComponent<OnHoverItem> ().hideText ();
+					});
 
 
-				if (panelCreator == null) {
-					panelCreatorMap.create(item.id);
-				}
-				else{
-					panelCreator.create(item.id);
-				}
+					temp.AddComponent<EventTrigger> ();
+					temp.GetComponent<EventTrigger> ().triggers.Add (eventEntry);
+					temp.GetComponent<EventTrigger> ().triggers.Add (eventExit);		
+
+					temp.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+
+
+						if (panelCreator == null) {
+							panelCreatorMap.create (item.id);
+						} else {
+							panelCreator.create (item.id);
+						}
+
+
 				
 
-			});
-			item.uiRef = temp;
-			itemsArray.Add (item);
+					});
+					item.uiRef = temp;
 
+				}
+				itemsArray.Add (item);
 			}
 
 		}
@@ -94,6 +121,10 @@ public class ItemManager : MonoBehaviour {
 
 	void Update () {
 
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			PlayerPrefs.SetString("items","0,4;1,2;2,1;3,10")	;
+			PlayerPrefs.Save ();
+		}
 
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			Destroy (GameObject.Find ("MapManager"));

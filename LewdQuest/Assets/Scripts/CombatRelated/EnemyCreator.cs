@@ -2,7 +2,12 @@
 using System.Collections;
 
 public class EnemyCreator {
-
+	/// <summary>
+	/// Create the specified character from a region and absoluteId.
+	/// absoluteId MUST be -1 if the character is not hardcoded with an ID
+	/// </summary>
+	/// <param name="region">Region.</param>
+	/// <param name="absoluteId">Absolute identifier.</param>
 	public static Character create(int region, int absoluteId){
 
 		int id;
@@ -10,7 +15,7 @@ public class EnemyCreator {
 
 		if (absoluteId == -1) {
 			id = getIdByRegion (region);
-			//Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
+			Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
 			if (PlayerPrefs.GetInt ("" + id, 0) > 0) {
 				////// IF THE ENEMY HAS ALREADY BEEN RECRUITED!!!!
 				id = reRollId (region, id);
@@ -36,6 +41,9 @@ public class EnemyCreator {
 			break;
 		case 5:
 			return new Character (id, "Thystle", 30, 1, 5, 20, "_thystle", true , "0,1,2", new int[2]{0,1});
+			break;
+		case 6:
+			return new Character (id, "Forest Wisp", 30, 1, 5, 20, "_wisp", false, "1", new int[2]{0,1});
 			break;
 		
 		case 10:
@@ -107,7 +115,7 @@ public class EnemyCreator {
 		case 0:
 			return 0;
 		case 1:
-			return (Random.Range(0,10));
+			return (Random.Range(1,10));
 
 		case 2:
 			return (Random.Range(10,21));
@@ -138,38 +146,6 @@ public class EnemyCreator {
 		}
 	}
 
-
-
-
-	public static Character createOwned(int id){
-
-		switch (id) {
-
-		case 0:
-			return new Character (id, "Aurelia", 20, 1, 5, 10, "_aurelia", true, "0,1,2");
-			break;
-		case 1:
-			return new Character (id, "Orb", 25, 1, 5, 10, "_orb", true, "0,1");
-			break;
-		case 2:
-			return new Character (id, "Lidia", 30, 1, 10, 10, "_lidia", true, " 0,5");
-			break;
-		case 4:
-			return new Character (id, "Twisted Tree", 30, 20, 5, 10, "_twisted_tree", false, "6");
-			break;
-		case 5:
-			return new Character (id, "Thystle", 30, 1, 5, 20, "_thystle", true, "0,1,2");
-			break;
-
-		case 10:
-			return new Character (id, "Winter", 60, 1, 15, 5, "_winter", true, "4");
-			break;
-		case 11:
-			return new Character (id, "Lamia Hoplite", 70, 1, 15, 5, "_lamia", true, "7,1");
-			break;
-		}
-		return null;
-	}
 
 
 

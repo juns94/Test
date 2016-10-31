@@ -12,6 +12,8 @@ public class ChestEvent : Event {
 	public override void prepareScene(){
 
 
+
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("chest");  
 		string flavor = "  You encounter an old, forgotten, wooden chest troughout your trip on the mountain. You realize that the chest could be opened if you carefully picked the lock. What do you do? ";
 		textPanel.GetComponentInChildren<Text>().text = flavor;
 

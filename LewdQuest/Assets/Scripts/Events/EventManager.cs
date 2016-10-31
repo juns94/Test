@@ -10,19 +10,17 @@ public class EventManager : MonoBehaviour {
 	public GameObject mainImage;
 	public GameObject textPanel;
 	public GameObject buttonPanel;
+	public GameObject dialogPanel;
 	public ItemManager itemManager;
+	public GameObject scriptedFight;
 
-	public void REEEE(){
-
-		Debug.Log ("REEEE");
-	}
 		
 	void Start () {
 		mapManager = GameObject.Find("MapManager");
 		if (mapManager != null) {
 			region = mapManager.GetComponent<MapManager> ().region;
 		} else
-			region = 2;
+			region = 1;
 
 
 		currentEvent = createEvent (region);
@@ -30,7 +28,9 @@ public class EventManager : MonoBehaviour {
 		currentEvent.buttonPanel 	= buttonPanel;
 		currentEvent.textPanel		= textPanel;
 		currentEvent.mainImage		= mainImage;
+		currentEvent.dialogPanel	= dialogPanel;
 		currentEvent.itemManager 	= itemManager;
+		currentEvent.scriptFight 	= scriptedFight;
 		currentEvent.prepareScene ();
 	
 	}
@@ -48,7 +48,17 @@ public class EventManager : MonoBehaviour {
 		switch (region) {
 		case 1:
 			{ /// FOREST
+
+
+
+
+				if (!(PlayerPrefs.GetInt ("0", 0) > 0)) {
+					return gameObject.AddComponent<AureliaEvent> ();
+				} else {
+					return gameObject.AddComponent<ForestEvent> ();
+				}
 				break;
+
 			}
 		case 2:
 			{ /// MOUNTAINS

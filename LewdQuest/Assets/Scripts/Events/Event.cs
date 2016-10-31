@@ -8,11 +8,15 @@ public abstract class Event : MonoBehaviour {
 	public GameObject 	buttonPanel	{ get; set; }
 	public GameObject 	textPanel	{ get; set; }
 	public GameObject 	mainImage	{ get; set; }
+	public GameObject 	dialogPanel	{ get; set; }
 	public ItemManager	itemManager { get; set; }
+	public GameObject 	scriptFight	{ get; set; }
 	//public string image { get; set; }
 
 
-
+	void Start(){
+		dialogPanel.SetActive (false);
+	}
 
 	public abstract void prepareScene();
 
