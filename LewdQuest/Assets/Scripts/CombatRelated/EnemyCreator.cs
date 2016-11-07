@@ -28,24 +28,23 @@ public class EnemyCreator {
 		switch (id) {
 
 		case 0:
-			return new Character (id, "Aurelia", 20, 1, 5, 10, "_aurelia", true , "0,1,2");
+			return new Character (id, "Aurelia", 25, 1, 5, 9, "_aurelia", true , "0,1,2");
 			break;
 		case 1:
 			return new Character (id, "Orb", 25, 1, 5, 10, "_orb", true , "0,1");
 			break;
 		case 2:
-			return new Character (id, "Lidia", 30, 1, 10, 10, "_lidia", true , " 0,5");
+			return new Character (id, "Lidia", 30, 1, 10, 5, "_lidia", true , " 0,5");
 			break;
 		case 4:
 			return new Character (id, "Twisted Tree", 30, 20, 5, 10, "_twisted_tree", false , "6" , new int[2]{0,1});
 			break;
 		case 5:
-			return new Character (id, "Thystle", 30, 1, 5, 20, "_thystle", true , "0,1,2", new int[2]{0,1});
+			return new Character (id, "Thystle", 30, 1, 5, 10, "_thystle", true , "0,1,2", new int[2]{0,1});
 			break;
 		case 6:
 			return new Character (id, "Forest Wisp", 30, 1, 5, 20, "_wisp", false, "1", new int[2]{0,1});
 			break;
-		
 		case 10:
 			return new Character (id, "Winter", 60, 1, 15,  5, "_winter", true , "4", new int[1]{2});
 			break;
@@ -53,7 +52,7 @@ public class EnemyCreator {
 			return new Character (id, "Lamia Hoplite", 70, 1, 15,  5, "_hoplite", true , "7,1", new int[1]{2});
 			break;
 		case 12:
-			return new Character (id, "Twisted Tree", 50, 20, 5, 10, "_twisted_tree", false , "6" , new int[1]{0});
+			return new Character (id, "Twisted Tree", 50, 1, 15, 10, "_twisted_tree", false , "6" , new int[1]{0});
 			break;
 
 

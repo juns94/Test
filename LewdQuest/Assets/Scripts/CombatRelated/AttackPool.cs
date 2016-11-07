@@ -7,14 +7,13 @@ public class AttackPool {
 	public static Attack createAttack(int id){
 
 
-
 		switch (id) {
 
 		case 0:
 			return new Attack ("Punch" , 1 , " hits you with their fists." , Attack.TYPE.DAMAGE);
 			break;
 		case 1:
-			return new Attack ("Magic Blast" , 1 , " unleashes a bolt of magic towards you." , Attack.TYPE.DAMAGE);
+			return new Attack ("Magic Blast" , 1 , " unleashes a bolt of magic towards you." , Attack.TYPE.MAGIC);
 			break;
 		case 2:
 			return new Attack ("Low Heal" , 1 , " <b>heals</b> their party with arcane magic." , Attack.TYPE.HEAL);

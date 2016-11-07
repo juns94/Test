@@ -32,7 +32,7 @@ public class Character  {
 	 **/
 	public int obedience{ get; set; }
 	public int horny{ get; set; }
-
+	public int love{ get; set; }
 
 
 
@@ -144,6 +144,8 @@ public class Character  {
 			if (hp > totalHP)
 				hp = totalHP;
 		}
+
+		alive = true;
 	}
 
 

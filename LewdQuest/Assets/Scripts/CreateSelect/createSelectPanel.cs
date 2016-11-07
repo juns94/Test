@@ -59,10 +59,10 @@
 		public void create(int itemId){
 
 
-
+				ArrayList partyMap= manager.getPartyMap();
 				ArrayList enemyMap = manager.getEnemyMap ();
 				panelParent = GameObject.Find ("ItemContainer");
-			//	if (enemyMap.Count > 1 & aliveCount () > 1) {
+			
 				
 					Animator animator = panelParent.transform.parent.gameObject.GetComponent<Animator> ();
 					popUp = Instantiate (panel);
@@ -119,10 +119,39 @@
 					}
 
 
+
+		for (int x = 1; x < partyMap.Count; x++) {
+			Character character = ((Chara_UI_Map)partyMap [x]).getCharacter ();
+
+			//if (character.getAlive ()) {
+				GameObject buttonPopUp 								= Instantiate (button);
+				buttonPopUp.transform.parent 						= popUp.transform;
+				buttonPopUp.transform.localScale 					= Vector3.one;
+				buttonPopUp.GetComponentInChildren<Text> ().text 	= character.getName ();
+				buttonPopUp.transform.localPosition 				= new Vector3 (gameObject.transform.position.x + 170, gameObject.transform.position.y, 0);	
+				buttonPopUp.name 									= "" + x;
+				buttonPopUp.GetComponent<Button> ().onClick.AddListener (() => {
+
+					Destroy (popUp);
+					enableOldGui ();
+					onHoverExit (int.Parse (buttonPopUp.name));
+					selectAction (itemId, int.Parse (buttonPopUp.name), true);
+					animator.Play("itemPanelSlideOut");
+					itemManager.hideItemPanel();
+					itemManager.removeItem(itemId);
+
+				});
+
+		//}
+
+		}
+
+
 					GameObject youButton = Instantiate (button);
 					youButton.transform.parent = popUp.transform;
 					youButton.transform.localScale = Vector3.one;
 					youButton.transform.localPosition = Vector3.zero;
+					youButton.name 							       = "0";
 					youButton.GetComponentInChildren<Text> ().text = "You";
 					youButton.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 						selectAction (itemId, 0, true);
@@ -152,13 +181,22 @@
 
 
 		void onHover(int position){
-			//	Debug.Log ("entro");
+		try{
 			((Chara_UI_Map)manager.getEnemyMap () [position]).getGameObject ().GetComponentInChildren<Outline>().enabled = true;
+		}
+		catch(System.Exception  e){
+
+		}
 		}
 
 		void onHoverExit(int position){
-			//	Debug.Log ("salio");
+		try{
 			((Chara_UI_Map)manager.getEnemyMap () [position]).getGameObject ().GetComponentInChildren<Outline>().enabled = false;
+		}	
+		catch(System.Exception  e){
+
+		}
+		
 		}
 
 

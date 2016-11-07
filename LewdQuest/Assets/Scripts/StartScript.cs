@@ -11,6 +11,7 @@ public class StartScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//PlayerPrefs.DeleteAll ();
+
 		HeroUtils.setHero ();
 		Invoke ("startAnimation", 1f);
 		Invoke ("displayButtons", 2.5f);

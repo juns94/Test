@@ -43,6 +43,7 @@ public class MapManager : MonoBehaviour {
 		PlayerPrefs.SetInt ("hp",PlayerPrefs.GetInt("hpTotal",0	));
 		PlayerPrefs.SetInt ("energy", 100);
 		PlayerPrefs.Save ();
+		LewdUtilities.getGameData (GameObject.Find ("GameData")).restSluts();
 
 	}
 
@@ -74,8 +75,7 @@ public class MapManager : MonoBehaviour {
 
 
 	public void resetAllCharacters(){
-
-	//	PlayerPrefs.DeleteAll ();
+		DataAccess.RESET ();
 		for (int x = 0; x < 100; x++) {
 
 			PlayerPrefs.SetInt (x + "", 0);

@@ -13,22 +13,23 @@ public class PartyManager : MonoBehaviour {
 	public GameObject item;
 	public GameObject detailPanel;
 	public GameObject partyBench;
+	public GameObject buffBench;
 	public GameObject bench;
 
 	void Start () {
 
-		gameData 		= GameObject.Find ("GameData").GetComponent<GameDataContainer>().getData();
+		gameData 		= LewdUtilities.getGameData (GameObject.Find ("GameData"));
 		bitches 		= getBitches();
 		partyBitches 	= getPartyBitches ();/*
 		detailPanel 	= GameObject.Find ("DetailPanel");
 		partyBench 		= GameObject.Find ("PartyBench");	
 		bench 			= GameObject.Find ("Bench");*/
-		for (int x = 0; x < 3; x++) {
+		for (int x = 0; x < 4; x++) {
 			GameObject go;
 			go = Instantiate (slot);
 			go.transform.parent = bench.transform;
 			go.transform.localScale = Vector3.one;
-		
+			go.transform.localPosition = Vector3.one;
 			int totalBenchBitches = bitches.Count;
 			if ((x + 1) <= totalBenchBitches) {
 				Character character = ((Character) bitches [x]);
@@ -46,7 +47,18 @@ public class PartyManager : MonoBehaviour {
 			}
 		}
 
-		for (int x = 0; x < 4 ; x++) {
+		for (int x = 0; x < 3; x++) { /////////BUFFBENCH
+			GameObject go;
+			go = Instantiate (miniSlot);
+			go.transform.parent = buffBench.transform;
+			go.transform.localScale = Vector3.one;
+			go.transform.localPosition = Vector3.one;
+
+
+		}
+
+
+		for (int x = 0; x < 1 ; x++) {
 			GameObject go;
 			go = Instantiate (miniSlot);
 			go.transform.parent = partyBench.transform;
@@ -111,7 +123,8 @@ public class PartyManager : MonoBehaviour {
 		details [0].text = "Name: "+character.name;
 		details [1].text = "Obedience: "+character.obedience;
 		details [2].text = "Horny: "+character.horny;
-		details [3].text = "HP: "+ character.hp + "/" +character.totalHP;
+		details [3].text = "Love: " + character.love;
+		details [4].text = "HP: "+ character.hp + "/" +character.totalHP;
 
 	}
 

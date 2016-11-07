@@ -11,7 +11,7 @@ public class GameData {
 
 	private List<Character> party;
 
-
+	/*
 	public List<Character> getBitches(){
 		List<Character> temp = new List<Character>();
 		for (int x = 0; x < 100; x++) {
@@ -20,7 +20,7 @@ public class GameData {
 			}
 		}
 		return temp;
-	}
+	}/*/
 
 	public void addSlut(int id){
 		party.Add(EnemyCreator.create(0,id));
@@ -28,7 +28,14 @@ public class GameData {
 
 
 
+	public void restSluts(){
+		foreach (Character character in party) {
+			character.hp = character.totalHP;
+			character.alive = true;
+		}
+		DataAccess.Save (this);
 
+	}
 
 	public Character getCharacterById( int id){
 

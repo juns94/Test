@@ -32,6 +32,11 @@ public class Slot : MonoBehaviour, IDropHandler{
 
 
 		} else {
+
+			Debug.Log ("SWAPPED " + item.transform.name + " con  " + DragHandler.itemDragged.name);
+			int itemState = PlayerPrefs.GetInt (item.transform.name, 0);
+			PlayerPrefs.SetInt (item.transform.name, PlayerPrefs.GetInt(DragHandler.itemDragged.name,0));
+			PlayerPrefs.SetInt (DragHandler.itemDragged.name, itemState);
 			Transform aux = DragHandler.itemDragged.transform.parent;
 			DragHandler.itemDragged.transform.SetParent(transform); 
 			item.transform.SetParent(aux);  

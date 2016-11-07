@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class UIManagerScript : MonoBehaviour {
 	public GameObject 	fuckButton;
@@ -13,16 +14,21 @@ public class UIManagerScript : MonoBehaviour {
 	ArrayList 			partyMap;
 	ArrayList 			enemyMap;
 	public int 			enemyNumber = 3;
-	int 		partyNumber = 1;
 	int 		lastAlivePosition;
 	bool 		waiting;
-	bool 		fightFinished = false;
+	bool 		fightFinished 	= false;
+	bool 		hasPartyMembers = false;
 	GameObject 	enemyPanel;
 	GameObject 	mapManager;
 	GameObject 	itemPanel;
 	GameObject	rigged;
 	public ItemManager itemManager;
 	public GameObject partyInfo;
+	public GameObject buddyUI;
+	public GameObject buddyButtons;
+	public GameObject partyButtons;
+	public GameObject buddyAttackBtn;
+
 
 	public bool safe = true;
 	public enum States {
@@ -37,21 +43,15 @@ public class UIManagerScript : MonoBehaviour {
 
 	States state;
 
-
-	void onGUI(){
-	}
-
-
 	void Start () {
 
-		gameData = LewdUtilities.getGameData (GameObject.Find ("GameData"));
-		int region = 0;
+		gameData = LewdUtilities.getGameData(GameObject.Find("GameData"));
+		int region = 1;
 		mapManager = GameObject.Find("MapManager");
 		if (mapManager != null) {
 			region = mapManager.GetComponent<MapManager> ().region;
 			enemyNumber = mapManager.GetComponent<MapManager> ().getEnemyNumber ();
 		}
-
 
 		enemyMap 	= new ArrayList ();
 		partyMap 	= new ArrayList ();
@@ -61,25 +61,24 @@ public class UIManagerScript : MonoBehaviour {
 		rigged 		= GameObject.Find ("scriptedFightObject");
 
 		if (rigged == null) {
+			
 			for (int x = 0; x < enemyNumber; x++) {
-				Character character = null;
-				GameObject newItem = Instantiate (itemPrefab) as GameObject;
-				newItem.transform.parent = enemyPanel.gameObject.transform;
-				newItem.transform.localScale = Vector3.one;
+				Character character 			= null;
+				GameObject newItem 				= Instantiate (itemPrefab) as GameObject;
+				newItem.transform.parent 		= enemyPanel.gameObject.transform;
+				newItem.transform.localScale 	= Vector3.one;
 				newItem.transform.localPosition = Vector3.zero;
-				if (safe) {
-					character = reRollCharacter (EnemyCreator.create (region, -1), region);
-				} else {
-					character = EnemyCreator.create (4, -1);
-				}
+				if (safe) character = reRollCharacter (EnemyCreator.create (region, -1), region);
+				else 	  character = EnemyCreator.create (4,4);
 				newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> (character.image);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
 			}
+
+
 		} else {
 			int[] enemyIdArray = rigged.GetComponent<RiggedFight>().enemyIdArray;
 			for (int x = 0; x < enemyIdArray.Length; x++) {
-				Debug.Log (enemyIdArray [x]);
 				Character character 			= null;
 				GameObject newItem 				= Instantiate (itemPrefab) as GameObject;
 				newItem.transform.parent 		= enemyPanel.gameObject.transform;
@@ -89,7 +88,6 @@ public class UIManagerScript : MonoBehaviour {
 				newItem.GetComponentsInChildren<Text> () 	[2].text = character.getName ();
 				newItem.GetComponentsInChildren<Image> () 	[3].overrideSprite = Resources.Load <Sprite> (character.image);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
-					
 			}
 			Destroy (rigged);	
 		}
@@ -97,26 +95,44 @@ public class UIManagerScript : MonoBehaviour {
 
 
 
+		////// PARTYMAP THING /////////
 
-		for (int x = 0; x < partyNumber; x++) {
-			GameObject item = GameObject.Find ("hpCombo");
-			Character character = HeroUtils.getHero ();
-			character.hp = PlayerPrefs.GetInt ("hp", 0);
-			partyMap.Add(new Chara_UI_Map(item, character ));
+			GameObject item = GameObject.Find 	("CharacterCombo");
+			Character  hero = HeroUtils.getHero (		  );
+			hero.hp 		= PlayerPrefs.GetInt( "hp", 0 );
+			partyMap.Add(new Chara_UI_Map(item, hero ));
+			
+		ArrayList temp = LewdUtilities.getPartyBitches ();
+		if (temp.Count != 0) {
+			for (int x = 0; x < temp.Count; x++) {
+				Character buddy = gameData.getCharacterById ((int)temp [0]);
+				//buddyUI.GetComponentsInChildren<Text>
+				partyMap.Add (new Chara_UI_Map (buddyUI, buddy));
+				buddyUI.GetComponentsInChildren<Text> () [1].text = buddy.name;
+				Debug.Log ("entro y el count es " + temp.Count);
+			}
+			hasPartyMembers = true;
+		}
+		else {
+			buddyUI.SetActive (false);
 		}
 
 
-	//	gameObject.GetComponent<Fading> ().beginFade (1);
-			
+
 
 	}
 
 	private Character reRollCharacter(Character character, int region){
 		if (character.female) {
-
-			while (isAlreadyInBattle (character)) {
+			int counter = 0;
+			while (isAlreadyInBattle (character) ) {
 				character = EnemyCreator.create (region,-1);
-			}
+				counter++;
+				if (counter == 100)
+					break;
+				}
+
+			Debug.Log (counter);
 
 		} else {
 			return character;
@@ -125,56 +141,43 @@ public class UIManagerScript : MonoBehaviour {
 	}
 	private bool isAlreadyInBattle(Character character){
 		for (int x = 0; x < enemyMap.Count; x++) {
-			if (character.id == ((Chara_UI_Map)enemyMap [x]).getCharacter ().id)
+			if (character.id == ((Chara_UI_Map)enemyMap [x]).getCharacter ().id) {
+
 				return true;
+			}
 		}
 		return false;
 	}
 	
 
 	void Update () {
-
-
+	//	Debug.Log (state);
 		if (Input.GetKeyDown (KeyCode.Escape)) {
+			DataAccess.Save(gameData);
 			Destroy (GameObject.Find ("MapManager"));
 			SceneManager.LoadScene ("MapScene");
-
 		}
-			
-
-
 		switch (state) {
-
 		case States.PLAYERCHOICE:
 			break;
-
 		case States.ENEMYCHOICE:
 			actEnemyTurn ();
 			break;
-
 		case States.LOSE:
 			break;
-
 		case States.WAIT:
 			if (!waiting) {
 				state = States.PLAYERCHOICE;
 				waiting = true;
 			}
 			break;
-
 		case States.WAITPLAYER:
 			if (!waiting) {
 				state = States.ENEMYCHOICE;
 				waiting = true;
 			}
 			break;
-
-
-
 		}
-
-
-	
 		updateEnemies ();
 		updateParty   ();
 	
@@ -184,8 +187,7 @@ public class UIManagerScript : MonoBehaviour {
 
 	void updateEnemies(){
 		for (int x = 0; x < enemyMap.Count; x++) {
-
-
+			
 			lastAlivePosition = LewdUtilities.getLastAlivePosition (this);
 			Image[] images = null;
 			GameObject currentUI = ((Chara_UI_Map)enemyMap [x]).getGameObject ();
@@ -194,7 +196,6 @@ public class UIManagerScript : MonoBehaviour {
 				images = currentUI.GetComponentsInChildren<Image> ();
 				currentUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)currentChara.getHp (), (float)currentChara.getTotalHp ());
 			}
-
 
 
 			if (currentChara.horny > 69) {
@@ -209,11 +210,7 @@ public class UIManagerScript : MonoBehaviour {
 			}
 
 			if (!currentChara.getAlive())  {  ////// SI ESTA MUERTO, SIN IMPORTAR LA POSICION!!!!
-
-
-			
-
-				if (LewdUtilities.aliveCount (this) == 0 & lastAlivePosition == x) {
+					if (LewdUtilities.aliveCount (this) == 0 & lastAlivePosition == x) {
 					/// This is called if the enemy is alone and it's qt grill
 					/// 
 					if (currentChara.female) {
@@ -222,6 +219,7 @@ public class UIManagerScript : MonoBehaviour {
 							combatLog.clear (true);
 							combatLog.logExhausted (currentChara.getName ());
 							openFuckPanel (currentChara);
+							buddyButtons.SetActive (false);
 							currentChara.gone = true;
 
 						}
@@ -240,6 +238,7 @@ public class UIManagerScript : MonoBehaviour {
 							exit.transform.localPosition 	= Vector3.zero;
 							exit.GetComponentInChildren<Text>().text = "Exit";
 							exit.GetComponentInChildren<Button>().onClick.AddListener (() => {
+								DataAccess.Save(gameData);
 								SceneManager.LoadScene ("MapScene");
 								Destroy( GameObject.Find("MapManager"));
 
@@ -278,7 +277,7 @@ public class UIManagerScript : MonoBehaviour {
 			Image[] images = null;
 			GameObject currentUI = ((Chara_UI_Map)partyMap [x]).getGameObject ();
 			Character currentChara = ((Chara_UI_Map)partyMap [x]).getCharacter ();
-			if (!currentChara.alive)
+			if (!currentChara.alive & x == 0)
 				StartCoroutine ("Lose");
 		
 			if (currentUI != null) {
@@ -292,6 +291,8 @@ public class UIManagerScript : MonoBehaviour {
 		}
 	}
 
+
+
 	public void useItem(int position , Item item, bool isPlayer){
 		if(state == States.PLAYERCHOICE){
 			state = States.WAITPLAYER;
@@ -304,12 +305,12 @@ public class UIManagerScript : MonoBehaviour {
 				currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 				character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 			} else {
-				 currentUI = ((Chara_UI_Map)partyMap [0]).getGameObject ();
-				 character = ((Chara_UI_Map)partyMap [0]).getCharacter ();
+				currentUI = ((Chara_UI_Map)partyMap [position]).getGameObject ();
+				character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 			}
 
 
-			if (character.getAlive ()) {
+			if (character.getAlive () || isPlayer) {
 				ItemCreator.useItem (character, item.id);
 				//character.receiveDamage (Random.Range(4,7));
 				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
@@ -318,10 +319,64 @@ public class UIManagerScript : MonoBehaviour {
 			}
 
 			Invoke ("setEnemyTurn", 0.5f);
-			//StartCoroutine("itemCouroutine", position, itemId, isPlayer);
+			DataAccess.Save(gameData);
 		}
 
 	}
+
+	public void useHealBuddy(Attack attack, int position , bool isPlayer){
+		if(state == States.PLAYERCHOICE){
+			state = States.WAITPLAYER;
+			waiting = true;
+		}
+
+		GameObject currentUI;
+		Character character;
+		if (!isPlayer) {
+			currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+			character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+		} else {
+			currentUI = ((Chara_UI_Map)partyMap [position]).getGameObject ();
+			character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
+		}
+		Character buddy = ((Chara_UI_Map)partyMap [1]).getCharacter ();
+		if (character.getAlive ()) {
+
+			character.heal ((int)(attack.getDamage () * buddy.getMagicPower()));
+
+		}
+
+		combatLog.logGreen (buddy.name +" heals " + character.name +" for "+((int)(attack.getDamage () * buddy.getMagicPower())) +" hitpoints!");
+
+		Invoke("setEnemyTurn", 0.5f);
+
+
+	}
+
+	public void dealDamageBuddy(Attack  attack , int position){
+		if(state == States.PLAYERCHOICE){
+			state = States.WAITPLAYER;
+			waiting = true;
+		}
+		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
+		Character enemy = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+		if (enemy.getAlive ()) {
+			Character buddy = ((Chara_UI_Map)partyMap [1]).getCharacter ();
+
+			int attackPower= buddy.attack;
+			if (attack.type == Attack.TYPE.MAGIC)
+				attackPower = buddy.magicPower;
+			
+			enemy.receiveDamage (Random.Range(attackPower ,attackPower + 3));
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+			combatLog.logText (buddy.name +" attacks " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with "+attack.getName()+".");
+		}
+		Invoke("setEnemyTurn", 0.5f);
+	}
+
+
+
 	public void dealDamage(int position){
 		if(state == States.PLAYERCHOICE){
 			state = States.WAITPLAYER;
@@ -376,8 +431,14 @@ public class UIManagerScript : MonoBehaviour {
 		if (character.getAlive ()) {
 			int totalalive = LewdUtilities.aliveCount (this);
 			character.receiveDamage (damage);
-			PlayerPrefs.SetInt ("hp", character.getHp());
-			PlayerPrefs.Save ();
+
+			if (position == 0) {
+				PlayerPrefs.SetInt ("hp", character.getHp ());
+				PlayerPrefs.Save ();
+			} else {
+				DataAccess.Save (gameData);
+			}
+
 			} 
 		}
 		
@@ -416,16 +477,29 @@ public class UIManagerScript : MonoBehaviour {
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
 			combatLog.logText ("You attack " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
 		}
+
 		yield return new WaitForSeconds(.5f);
 	
-		state = States.ENEMYCHOICE;
-		waiting = false;
+
+		if (hasPartyMembers) {
+			if (((Chara_UI_Map)partyMap [1]).getCharacter ().alive  & LewdUtilities.AliveEnemiesRemain(this)) {
+				partyTurn ();
+			}
+			else{
+				state = States.ENEMYCHOICE;
+				waiting = false;
+			}
+
+		} else {
+			state = States.ENEMYCHOICE;
+			waiting = false;
+		}
 	}
 
 	IEnumerator itemCouroutine(int position, int itemId, bool playerItem) {
 
 		GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
-		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+		Character  character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			ItemCreator.useItem (character, itemId);
 			//character.receiveDamage (Random.Range(4,7));
@@ -434,9 +508,44 @@ public class UIManagerScript : MonoBehaviour {
 			combatLog.logText ("You use the "+ " on " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +".");
 		}
 		yield return new WaitForSeconds(.5f);
+		if (hasPartyMembers) {
+			if (((Chara_UI_Map)partyMap [1]).getCharacter ().alive) {
+				partyTurn ();
+			}
+		} else {
+			state = States.ENEMYCHOICE;
+			waiting = false;
+		}
+	}
 
-		state = States.ENEMYCHOICE;
-		waiting = false;
+
+	void partyTurn(){
+
+
+		LewdUtilities.deleteAllButtons (buddyButtons);
+		Character buddy = ((Chara_UI_Map)partyMap[1]).getCharacter();
+		partyButtons.SetActive (false);
+		buddyButtons.SetActive (true);
+		List<Attack> attacks = buddy.attackList;
+		for (int i = 0; i < attacks.Count; i++) {
+			Attack attack = attacks [i];
+			GameObject button = Instantiate (buddyAttackBtn);
+			button.transform.SetParent (buddyButtons.transform);
+			button.transform.localScale = Vector3.one;
+			button.transform.localPosition = Vector3.one;
+			button.GetComponentInChildren<Text> ().text = attack.getName ();
+			button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+				button.GetComponent<CreateBuddyPanel>().create(attack, attack.type);
+			});
+
+		}
+
+
+	}
+
+	public void activateRegularButtons(){
+		buddyButtons.SetActive (false);
+		partyButtons.SetActive (true);
 	}
 
 
@@ -451,14 +560,15 @@ public class UIManagerScript : MonoBehaviour {
 				currentUI.GetComponent<Animator> ().Play ("HornyAnimation");
 				combatLog.logText (currentChara.getName () + " is too horny to attack!");
 			} else {
+
+				int pos = LewdUtilities.getPartyAlivePos(partyMap);
 				Attack attack = currentChara.getRandomAttack ();
 				currentUI.GetComponent<Animator> ().Play ("Attack");
 				combatLog.logEnemyText (currentChara.getName () + attack.getFlavorText());
-				if (attack.type == Attack.TYPE.DAMAGE) {dealDamageParty (0, (int)(attack.getDamage() * currentChara.attack));}
+				if (attack.type == Attack.TYPE.MAGIC) {dealDamageParty (  pos, (int)(attack.getDamage() * currentChara.magicPower));}
+				if (attack.type == Attack.TYPE.DAMAGE) {dealDamageParty (  pos, (int)(attack.getDamage() * currentChara.attack));}
 				if (attack.type == Attack.TYPE.HEAL) {healEnemy((int)(attack.getDamage() * currentChara.attack));}
 
-
-		//		dealDamageParty (0);
 			}
 		}
 	
@@ -484,10 +594,11 @@ public class UIManagerScript : MonoBehaviour {
 
 	IEnumerator Lose() {
 		float delta;
-		//delta = gameObject.GetComponent<Fading> ().beginFade (1);
+		DataAccess.Save(gameData);
 		yield return new WaitForSeconds(1f);
 		Destroy( GameObject.Find("MapManager"));
 		SceneManager.LoadScene ("LoseScene");
+
 
 	}
 
@@ -531,6 +642,7 @@ public class UIManagerScript : MonoBehaviour {
 				button.transform.localPosition = Vector3.zero;
 				button.GetComponentInChildren<Text> ().text = "Exit";
 				button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
+				DataAccess.Save(gameData);
 				SceneManager.LoadScene("MapScene");
 				Destroy(mapManager);
 
@@ -550,6 +662,9 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 
+	public ArrayList getPartyMap(){
+		return partyMap;
+	}
 
 	public ArrayList getEnemyMap(){
 		return enemyMap;
@@ -559,6 +674,7 @@ public class UIManagerScript : MonoBehaviour {
 
 		if (state == States.PLAYERCHOICE) {
 			if (Random.Range (0, 3) == 1) {
+				DataAccess.Save(gameData);
 				Destroy( GameObject.Find("MapManager"));
 				SceneManager.LoadScene ("MapScene");
 			} else {

@@ -13,6 +13,7 @@ public class Attack  {
 
 	public enum TYPE{
 		DAMAGE,
+		MAGIC,
 		HEAL,
 		BUFF,
 		LEWD

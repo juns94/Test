@@ -80,4 +80,10 @@ public class DataAccess
 			Debug.Log(message);
 		}
 	}
+
+
+	public static void RESET(){
+
+		Save(new GameData());
+	}
 }
