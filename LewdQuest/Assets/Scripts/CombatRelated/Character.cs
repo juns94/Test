@@ -110,6 +110,9 @@ public class Character  {
 	public void receiveDamage(int damage){
 		hp -= damage;
 
+		if (horny >= 50)
+			horny -= 10;
+
 
 			if (hp <= 0) {
 				alive = false;

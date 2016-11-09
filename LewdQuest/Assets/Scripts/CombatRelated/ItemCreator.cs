@@ -42,6 +42,35 @@ public class ItemCreator {
 			return new Item (id, "Mage Audiobook"	,amount , " Permanently raises your Magical Power by 1 point. Enchanted book of arcane knowledge that reads itself and then dissappears.", Item.TYPE.PERMANENT);
 			break;
 
+			///////***********************************************************************************************************************///////////////////
+			/// 
+			/// 
+
+		case 200:
+			return new Item (id, "Rose"	,amount , " Carefully handpicked by whisps on the Evergreen garden of luxury. Be careful about the thorns.", Item.TYPE.GIFT);
+			break;
+		case 201:
+			return new Item (id, "Chocolates"	,amount , " Delicious candy for the most refined tastes. ( Does not contain trans fat or gluten ).", Item.TYPE.GIFT);
+			break;
+		case 202:
+			return new Item (id, "Skull"	,amount , "Gruesome and slightly out of fashion, yet will be acclaimed by a select few.", Item.TYPE.GIFT);
+			break;
+		case 203:
+			return new Item (id, "Bouquet of Flowers"	,amount , "A bunch of wildflowers and delicate ornaments.", Item.TYPE.GIFT);
+			break;
+		case 204:
+			return new Item (id, "Candy bag"	,amount , "A lot of assorted sweets for the sugar friendly.", Item.TYPE.GIFT);
+			break;
+		case 205:
+			return new Item (id, "Obedience candy"	,amount , "Ingesting it will make people slightly more obedient to you.", Item.TYPE.GIFT);
+			break;
+		case 206:
+			return new Item (id, "Dragon Dildo"	,amount , "Someone is going to end with a stretched, loose butt with this.", Item.TYPE.GIFT);
+			break;
+		case 207:
+			return new Item (id, "Wine"	,amount , "Made with fine berries and the tears of working gnomes ( They cry tears of joy, don't worry. ).", Item.TYPE.GIFT);
+			break;
+
 		}
 		return null;
 	}

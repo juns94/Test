@@ -54,6 +54,9 @@ public class EnemyCreator {
 		case 12:
 			return new Character (id, "Twisted Tree", 50, 1, 15, 10, "_twisted_tree", false , "6" , new int[1]{0});
 			break;
+		case 13:
+			return new Character (id, "Cyclops", 200, 1, 20, 10, "_cyclops", false , "5" , new int[1]{100});
+			break;
 
 
 		default : return create(region,-1);
