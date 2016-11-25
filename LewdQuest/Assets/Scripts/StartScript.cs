@@ -10,8 +10,7 @@ public class StartScript : MonoBehaviour {
 	public GameObject buttonsPanel;
 	// Use this for initialization
 	void Start () {
-		//PlayerPrefs.DeleteAll ();
-
+	//	PlayerPrefs.DeleteAll ();	
 		HeroUtils.setHero ();
 		Invoke ("startAnimation", 1f);
 		Invoke ("displayButtons", 2.5f);

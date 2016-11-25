@@ -15,7 +15,6 @@ public class ItemContainer : MonoBehaviour {
 
 	void Start () {
 
-		allItemString	 	= "0,4;1,2;2,1;3,10";
 		itemsArray 			= new ArrayList();
 		allItemString 		= PlayerPrefs.GetString ("items","");
 		itemCombo 			= allItemString.Split (';');
@@ -24,7 +23,6 @@ public class ItemContainer : MonoBehaviour {
 
 
 		for ( int x = 0; x < itemCombo.Length ; x++) {
-			//	Debug.Log (" intento parsear :" + itemCombo [x].Split (',') [0]);
 			if((itemCombo[x])!= ""){
 				int id	 										= int.Parse(itemCombo [x].Split (',') [0]);
 				int itemAmount 									= int.Parse(itemCombo [x].Split (',') [1]);
@@ -42,15 +40,7 @@ public class ItemContainer : MonoBehaviour {
 
 	void Update () {
 
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			PlayerPrefs.SetString("items","0,4;1,2;2,1;3,10")	;
-			PlayerPrefs.Save ();
-		}
 
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Destroy (GameObject.Find ("MapManager"));
-			SceneManager.LoadScene ("MapScene");
-		}
 
 	}
 

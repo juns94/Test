@@ -7,6 +7,17 @@ public class GrandCityManager : MonoBehaviour {
 
 
 
+
+
+
+	public void GoToGiftShop(){
+
+		Destroy(GameObject.Find ("MapManager"));
+		SceneManager.LoadScene ("GiftShopScene");
+
+	}
+
+
 	public void goToShop(){
 
 		Destroy(GameObject.Find ("MapManager"));

@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 public class UIManagerScript : MonoBehaviour {
 	public GameObject 	fuckButton;
-	public GameObject 	itemPrefab;
+	public GameObject 	enemyPortraitItem;
+	public GameObject 	enemyPortraitItemBig;
 	public CombatLog 	combatLog;
 	public EnemyCreator enemyCreator;
 	GameData 			gameData;
@@ -28,7 +29,6 @@ public class UIManagerScript : MonoBehaviour {
 	public GameObject buddyButtons;
 	public GameObject partyButtons;
 	public GameObject buddyAttackBtn;
-
 
 	public bool safe = true;
 	public enum States {
@@ -64,14 +64,20 @@ public class UIManagerScript : MonoBehaviour {
 			
 			for (int x = 0; x < enemyNumber; x++) {
 				Character character 			= null;
-				GameObject newItem 				= Instantiate (itemPrefab) as GameObject;
+				GameObject newItem;
+
+				if (safe) character = reRollCharacter (EnemyCreator.create (region, -1), region);
+				else 	  character = EnemyCreator.create (4,4);
+				if(character.id == 14 | character.id == 13)
+				newItem 				= Instantiate (enemyPortraitItemBig) as GameObject;
+				else
+				newItem 				= Instantiate (enemyPortraitItem) as GameObject;
 				newItem.transform.parent 		= enemyPanel.gameObject.transform;
 				newItem.transform.localScale 	= Vector3.one;
 				newItem.transform.localPosition = Vector3.zero;
-				if (safe) character = reRollCharacter (EnemyCreator.create (region, -1), region);
-				else 	  character = EnemyCreator.create (4,4);
+
 				newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
-				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> (character.image);
+				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> ("Portraits/"+character.image);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
 			}
 
@@ -80,13 +86,13 @@ public class UIManagerScript : MonoBehaviour {
 			int[] enemyIdArray = rigged.GetComponent<RiggedFight>().enemyIdArray;
 			for (int x = 0; x < enemyIdArray.Length; x++) {
 				Character character 			= null;
-				GameObject newItem 				= Instantiate (itemPrefab) as GameObject;
+				GameObject newItem 				= Instantiate (enemyPortraitItem) as GameObject;
 				newItem.transform.parent 		= enemyPanel.gameObject.transform;
 				newItem.transform.localScale 	= Vector3.one;
 				newItem.transform.localPosition = Vector3.zero;
 				character 						= EnemyCreator.create (0, enemyIdArray[x]);
 				newItem.GetComponentsInChildren<Text> () 	[2].text = character.getName ();
-				newItem.GetComponentsInChildren<Image> () 	[3].overrideSprite = Resources.Load <Sprite> (character.image);
+				newItem.GetComponentsInChildren<Image> () 	[3].overrideSprite = Resources.Load <Sprite> ("Portraits/"+character.image);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
 			}
 			Destroy (rigged);	

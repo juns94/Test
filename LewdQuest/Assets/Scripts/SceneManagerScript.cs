@@ -11,6 +11,7 @@ public class SceneManagerScript : MonoBehaviour {
 	private Scene scene;
 	private Character character;
 	private UIManagerScript manager;
+	private UIManagerSex sexManager;
 	private GameObject enemyPanel;
 	private CombatLog combatLog;
 	private GameObject fuckButton;
@@ -29,14 +30,38 @@ public class SceneManagerScript : MonoBehaviour {
 		this.fuckButton = manager.fuckButton; 
 	}
 
+	public void setEverything( GameObject enemyPanel ,GameObject partyPanel , Scene scene, Character character, UIManagerSex manager){
+		this.partyPanel = partyPanel;
+		this.scene 		= scene		;
+		this.character 	= character	;
+		this.sexManager = manager	;
+		this.enemyPanel = enemyPanel;
+		this.combatLog  = sexManager.combatLog;
+		this.fuckButton = sexManager.fuckButton; 
+		combatLog.setup ();
+	}
+
+
 
 	public enum States {
 		STARTED,
 		WAIT
 	}
 
-	public void startManager() {
+	public void startSexManager() {
+		fuckpanel = GameObject.Find("fuckPanel");
+		Transform transform = fuckpanel.transform;
+		transform.localPosition = new Vector3(transform.position.x,transform.position.y,27);
+		fuckpanel.transform.parent = enemyPanel.transform;
+		sceneParts 		= scene.sceneText.Split ('|');
+		LewdUtilities.deleteAllButtons (partyPanel);
+		advanceScene (0); // Comienza a ver la escena.
+		firstSprite =  Resources.Load <Sprite> (scene.image);
+		fuckpanel.GetComponentsInChildren<Image>()[1].sprite = firstSprite;
 
+	}
+
+	public void startManager() {
 		Destroy(enemyPanel.GetComponentsInChildren<Transform>()[1].gameObject);
 		fuckpanel = GameObject.Find("fuckPanel");
 		Transform transform = fuckpanel.transform;
@@ -48,13 +73,6 @@ public class SceneManagerScript : MonoBehaviour {
 		firstSprite =  Resources.Load <Sprite> (scene.image);
 		fuckpanel.GetComponentsInChildren<Image>()[1].sprite = firstSprite;
 
-
-		Debug.Log (sceneParts.Length);
-
-
-
-
-	
 	}
 
 	void Update () {
@@ -95,6 +113,8 @@ public class SceneManagerScript : MonoBehaviour {
 			Debug.Log ("el exeption");
 
 		}
+
+		combatLog.resetPosition ();
 	}
 
 	public void makeNextButton(){
