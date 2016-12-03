@@ -48,9 +48,6 @@ public class DialogManager : MonoBehaviour {
 		dialogue = newDialogue;
 		box.SetActive (true);
 		text.text = dialogue[0];
-		Invoke ("hideBox",3f);
-
-
 		animator.Play ("dialogBoxShake");
 
 	}
@@ -87,7 +84,7 @@ public class DialogManager : MonoBehaviour {
 	}
 
 	void hideBox(){
-		//animator.Play ("New State");
+		animator.Play ("New State");
 		currentPos = 0;
 		box.SetActive (false);
 

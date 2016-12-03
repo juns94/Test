@@ -91,12 +91,17 @@ public class EventManager : MonoBehaviour {
 		case 3:
 			{ /// PLAINS
 
-				switch (Random.Range (0, 5)) {
+				switch (Random.Range (0, 2)) {
 
 				case 0:
-					return gameObject.AddComponent<ChestEvent> ();
+					if (PlayerPrefs.GetInt ("btnLake!", 0) != 1)
+						return gameObject.AddComponent<DiscoverLakeEvent> ();
+					else
+						return createEvent (region);
+					break;
+
 				case 1:
-					return gameObject.AddComponent<ChestEvent> ();
+					return gameObject.AddComponent<RunningEvent> ();
 				case 2:
 					return gameObject.AddComponent<AssassinEvent> ();
 				case 3:

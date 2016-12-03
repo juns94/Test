@@ -28,6 +28,21 @@ public class ItemCreator {
 			return new Item (id, "Mage Potion"	,amount , " Gives a temporary magic power boost for the rest of the current fight.");
 			break;
 
+
+
+
+
+		case 50: 
+			return new Item (id, "Mana blob"	,amount , " Liquid remains of a creature made from corrupted mana.", Item.TYPE.QUEST);
+			break;
+		case 51: 
+			return new Item (id, "Goblin teeth"	,amount , " The sharpened teeth of a Goblin. Said to have magic properties.", Item.TYPE.QUEST);
+			break;
+		case 52: 
+			return new Item (id, "Dark Bark"	,amount , " The bark of a hardened tree.", Item.TYPE.QUEST);
+			break;
+
+
 			///////***********************************************************************************************************************///////////////////
 			/// 
 			/// 
@@ -36,7 +51,7 @@ public class ItemCreator {
 			return new Item (id, "Vitality powder"	,amount , " Permanently raises your HP by 10 hitpoints. Does not contain Giant marrow or artificial additives.", Item.TYPE.PERMANENT);
 			break;
 		case 101:
-			return new Item (id, "Barbarian extract"	,amount , " Permanently raises your Attack by 1 point. Grinded barbarian bones and unknown substances into a vial of pure power.", Item.TYPE.PERMANENT);
+			return new Item (id, "Barbarian extract",amount , " Permanently raises your Attack by 1 point. Grinded barbarian bones and unknown substances into a vial of pure power.", Item.TYPE.PERMANENT);
 			break;
 		case 102:
 			return new Item (id, "Mage Audiobook"	,amount , " Permanently raises your Magical Power by 1 point. Enchanted book of arcane knowledge that reads itself and then dissappears.", Item.TYPE.PERMANENT);

@@ -205,8 +205,10 @@ public class UIManagerScript : MonoBehaviour {
 
 
 			if (currentChara.horny > 69) {
+				Debug.Log ("deberia estar horny");
 				try{
-					Sprite temp =  Resources.Load <Sprite> (currentChara.image+"_h");
+					Sprite temp =
+						Resources.Load <Sprite> ("Portraits/"+currentChara.image+"_h");
 					if(temp!= null)
 					currentUI.GetComponentsInChildren<Image> ()[3].overrideSprite = temp;
 				}catch(System.Exception e){
@@ -232,7 +234,7 @@ public class UIManagerScript : MonoBehaviour {
 					} else {
 
 
-						if (!fightFinished) {
+						if (!fightFinished) {	
 
 							GameObject panel = partyInfo;
 							//GameObject panel 				= GameObject.Find ("PartyInfo");
@@ -305,8 +307,7 @@ public class UIManagerScript : MonoBehaviour {
 			waiting = true;
 			GameObject currentUI;
 			Character character;
-
-
+			gameObject.GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/item"));
 			if (!isPlayer) {
 				currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 				character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
@@ -318,7 +319,6 @@ public class UIManagerScript : MonoBehaviour {
 
 			if (character.getAlive () || isPlayer) {
 				ItemCreator.useItem (character, item.id);
-				//character.receiveDamage (Random.Range(4,7));
 				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
 				combatLog.logGreen("You use the <size=20><b>"+ item.name + "</b></size> on " + character.name +".");
@@ -373,9 +373,9 @@ public class UIManagerScript : MonoBehaviour {
 			if (attack.type == Attack.TYPE.MAGIC)
 				attackPower = buddy.magicPower;
 			
-			enemy.receiveDamage (Random.Range(attackPower ,attackPower + 3));
+			enemy.receiveDamage (Random.Range(attackPower , attackPower + 3));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
-			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,7)));
 			combatLog.logText (buddy.name +" attacks " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with "+attack.getName()+".");
 		}
 		Invoke("setEnemyTurn", 0.5f);
@@ -436,7 +436,8 @@ public class UIManagerScript : MonoBehaviour {
 		Character  character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			int totalalive = LewdUtilities.aliveCount (this);
-			character.receiveDamage (damage);
+
+			character.receiveDamage (Random.Range(damage-2 , damage + 2));
 
 			if (position == 0) {
 				PlayerPrefs.SetInt ("hp", character.getHp ());
@@ -480,7 +481,7 @@ public class UIManagerScript : MonoBehaviour {
 			character.receiveDamage (Random.Range(attack ,attack + 3));
 			//character.receiveDamage (Random.Range(4,7));
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
-			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,5)));
+			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,7)));
 			combatLog.logText ("You attack " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
 		}
 
@@ -563,18 +564,35 @@ public class UIManagerScript : MonoBehaviour {
 			// busca un atack aqui de la lista del
 
 			if (currentChara.horny > 80) {
-				currentUI.GetComponent<Animator> ().Play ("HornyAnimation");
+				currentUI.GetComponent<Animator> ().Play ("hornyEmitAnimation");
 				combatLog.logText (currentChara.getName () + " is too horny to attack!");
 			} else {
 
-				int pos = LewdUtilities.getPartyAlivePos(partyMap);
 				Attack attack = currentChara.getRandomAttack ();
-				currentUI.GetComponent<Animator> ().Play ("Attack");
-				combatLog.logEnemyText (currentChara.getName () + attack.getFlavorText());
-				if (attack.type == Attack.TYPE.MAGIC) {dealDamageParty (  pos, (int)(attack.getDamage() * currentChara.magicPower));}
-				if (attack.type == Attack.TYPE.DAMAGE) {dealDamageParty (  pos, (int)(attack.getDamage() * currentChara.attack));}
-				if (attack.type == Attack.TYPE.HEAL) {healEnemy((int)(attack.getDamage() * currentChara.attack));}
+				if (Random.Range (0, 6) == 5 && attack.type != Attack.TYPE.HEAL) { //// RANDOM CHANCE TO MISS
 
+					currentUI.GetComponent<Animator> ().Play ("Miss");
+					combatLog.logEnemyText (currentChara.getName () + "  missed! " );
+					gameObject.GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/miss"));
+				} else {
+					
+					int pos = LewdUtilities.getPartyAlivePos (partyMap);
+					currentUI.GetComponent<Animator> ().Play ("Attack");
+					combatLog.logEnemyText (currentChara.getName () + attack.getFlavorText ());
+					if (attack.type == Attack.TYPE.BUFF) {
+						currentChara.armor += 2;
+					}
+					if (attack.type == Attack.TYPE.MAGIC) {
+						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.magicPower));
+					}
+					if (attack.type == Attack.TYPE.DAMAGE) {
+						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.attack));
+					}
+					if (attack.type == Attack.TYPE.HEAL) {
+						healEnemy ((int)(attack.getDamage () * currentChara.magicPower));
+					}
+
+				}
 			}
 		}
 	
@@ -615,10 +633,11 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	IEnumerator delayedRecruit(int id) {
-		yield return new WaitForSeconds(.3f);
+		yield return new WaitForSeconds(.5f);
 		int position = LewdUtilities.getLastVisiblePosition(this);
 		int hornyCount = 0;
-		if (((Chara_UI_Map)enemyMap [position]).getCharacter ().horny > 70) {
+		Character character = ((Chara_UI_Map)enemyMap [position]).getCharacter ();
+		if (character.horny > 70) {
 			hornyCount = 1;
 		}
 		if ((Random.Range (0, 3)+hornyCount) > 1 & id != 1) {
@@ -633,6 +652,13 @@ public class UIManagerScript : MonoBehaviour {
 		} else {
 			
 			combatLog.logText (" The enemy used the chance to run away. ");
+
+			int money = (character.attack + character.getTotalHp () + character.magicPower) * 2;
+			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + money);
+			combatLog.logText ("<color=#008000ff> You received <b>" + money + "</b> gold pieces. </color>");
+			itemManager.saveCurrentInventory ();
+			PlayerPrefs.Save ();
+
 			GameObject currentUI = ((Chara_UI_Map)enemyMap [position]).getGameObject ();
 			currentUI.GetComponent<Animator> ().Play ("Dead");
 
@@ -728,11 +754,11 @@ public class UIManagerScript : MonoBehaviour {
 
 
 		if (character.itemPool != null & (Random.Range(0,3) == 2)) {
-			string name = itemManager.AddItemToInventory (Random.Range (0, character.itemPool.Length),1);
+			string name = itemManager.AddItemToInventory (character.itemPool[Random.Range (0, character.itemPool.Length)],1);
 			combatLog.logGreen (" You received a drop of :<b>" + name + "</b>.");
 		} else {
 
-			int money = (character.attack + character.getTotalHp () + character.horny) / 2;
+			int money = (character.attack + character.getTotalHp () + character.magicPower) * 2;
 			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + money);
 			combatLog.logGreen (" You received <b>" + money + "</b> gold pieces.");
 		}

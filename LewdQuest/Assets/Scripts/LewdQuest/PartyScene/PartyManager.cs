@@ -25,7 +25,7 @@ public class PartyManager : MonoBehaviour {
 		detailPanel 	= GameObject.Find ("DetailPanel");
 		partyBench 		= GameObject.Find ("PartyBench");	
 		bench 			= GameObject.Find ("Bench");*/
-		for (int x = 0; x < 4; x++) {
+		for (int x = 0; x < bitches.Count + 1; x++) {
 			GameObject go;
 			go = Instantiate (slot);
 			go.transform.parent = bench.transform;
@@ -118,7 +118,14 @@ public class PartyManager : MonoBehaviour {
 	public void setDetails(Character character){
 		interactionManager.setId(character.id);
 		Text[] details;
-		detailPanel.GetComponentsInChildren<Image>()[1].sprite = Resources.Load <Sprite> (character.image);
+
+		detailPanel.GetComponentsInChildren<Image> () [1].sprite = Resources.Load <Sprite> ("Portraits/" + character.image);
+		if (character.horny > 69) {
+		 
+			if (Resources.Load <Sprite> ("Portraits/" + character.image + "_h") != null)
+			detailPanel.GetComponentsInChildren<Image> () [1].sprite = Resources.Load <Sprite> ("Portraits/" + character.image + "_h");
+		}
+
 		details = detailPanel.GetComponentsInChildren<Text> ();
 
 

@@ -259,10 +259,9 @@ public class GiftManager : MonoBehaviour {
 	void selectAction(int itemId, Character character){
 
 
-		Debug.Log (character.love);
+		Debug.Log (interactionManager.gameData);
 		ItemCreator.useGift (character, itemId);
-		Debug.Log (character.love);
-
+		Debug.Log (interactionManager.gameData);
 		DataAccess.Save (interactionManager.gameData);
 
 

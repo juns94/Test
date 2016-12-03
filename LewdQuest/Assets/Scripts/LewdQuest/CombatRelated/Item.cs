@@ -8,7 +8,8 @@ public class Item {
 		CONSUMABLE,
 		GIFT,
 		ARMOR,
-		PERMANENT
+		PERMANENT,
+		QUEST
 	}
 
 

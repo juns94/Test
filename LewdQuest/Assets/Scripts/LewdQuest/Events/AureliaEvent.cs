@@ -11,7 +11,7 @@ public class AureliaEvent : Event {
 
 	public override void prepareScene(){
 
-
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("_wip");  
 		string flavor = " While moving through the forest, you see a bright yellowish light around the corner of a dead,missshapen tree. You ponder if it might be a good idea to continue any further. What do you do?";
 
 		textPanel.GetComponentInChildren<Text>().text = flavor;

@@ -9,7 +9,6 @@ public class Character  {
 
 	public int id;
 	public string name;
-	public int level;
 	public int attack;
 	public int magicPower;
 	public int hp;
@@ -21,6 +20,8 @@ public class Character  {
 	public bool female { get; set; }
 	public bool recruitable;
 	public int[] itemPool;
+	public int armor;
+
 
 
 	public List<Attack> attackList { get; set; }
@@ -43,7 +44,6 @@ public class Character  {
 		this.hp = hp;
 		this.totalHP = hp;
 		this.name = name;
-		this.level = level;
 		this.attack = attack;
 		this.magicPower = magicPower;
 		this.image = image;
@@ -56,7 +56,6 @@ public class Character  {
 		this.hp = hp;
 		this.totalHP = hp;
 		this.name = name;
-		this.level = level;
 		this.attack = attack;
 		this.magicPower = magicPower;
 		this.image = image;
@@ -76,7 +75,6 @@ public class Character  {
 		this.hp = hp;
 		this.totalHP = hp;
 		this.name = name;
-		this.level = level;
 		this.attack = attack;
 		this.magicPower = magicPower;
 		this.image = image;
@@ -110,10 +108,12 @@ public class Character  {
 		return hp; }
 
 	public void receiveDamage(int damage){
-		hp -= damage;
+		damage -= armor;
+		if (damage > 0) {
+			hp -= damage;
 
-		if (horny >= 50)
-			horny -= 10;
+			if (horny >= 50)
+				horny -= 10;
 
 
 			if (hp <= 0) {
@@ -121,6 +121,7 @@ public class Character  {
 				hp = 0;
 			}
 		}
+	}
 
 	public int getAttack(){
 		return attack;

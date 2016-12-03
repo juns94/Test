@@ -13,6 +13,9 @@ public class ForestObdEvent : Event {
 	GameData gameData;
 	Character slut;
 	public override void prepareScene(){
+
+
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("forest_love");  
 		ArrayList temp = LewdUtilities.getPartyBitches ();
 		gameData = LewdUtilities.getGameData (GameObject.Find("GameData"));
 		slut = gameData.getCharacterById (((int)temp[0]));

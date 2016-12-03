@@ -25,10 +25,6 @@ public class createSelectPanelMap : MonoBehaviour {
 		itemManager = GetComponent<ItemManager>();
 		party = new ArrayList ();
 
-		for (int i = 0; i < 1; i++) {
-			Debug.Log (gameData);
-		}
-
 
 			
 		Character character = new Character (0, "You", 230, 1, 1, 1, "", false);

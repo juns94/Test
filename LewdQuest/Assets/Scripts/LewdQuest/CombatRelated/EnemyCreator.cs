@@ -24,7 +24,6 @@ public class EnemyCreator {
 		} else {
 			id = absoluteId;
 		}
-	//	Debug.Log (" El id final generado fue " + id);
 		switch (id) {
 
 		case 0:
@@ -43,8 +42,15 @@ public class EnemyCreator {
 			return new Character (id, "Thystle", 30,  5, 10, "_thystle", true,false , "0,1,2", new int[2]{0,1});
 			break;
 		case 6:
-			return new Character (id, "Forest Wisp", 30, 5, 20, "_wisp", false,false, "1", new int[2]{0,1});
+			return new Character (id, "Forest Wisp", 30, 5, 12, "_wisp", false,false, "1", new int[2]{0,1});
 			break;
+		case 7:
+			return new Character (id, "Forest Wisp", 30, 5, 12, "_wisp", false,false, "1", new int[2]{0,1});
+			break;
+		case 8:
+			return new Character (id, "Forest Wisp", 30, 5, 12, "_wisp", false,false, "1", new int[2]{0,1});
+			break;
+
 		case 10:
 			return new Character (id, "Winter", 60,  15,  5, "_winter", true,true , "4", new int[1]{2});
 			break;
@@ -52,7 +58,7 @@ public class EnemyCreator {
 			return new Character (id, "Lamia Hoplite", 70, 15,  5, "_hoplite", true,true , "7,1", new int[1]{2});
 			break;
 		case 12:
-			return new Character (id, "Twisted Tree", 50, 15, 10, "_twisted_tree", false,false , "6" , new int[1]{0});
+			return new Character (id, "Twisted Tree", 50, 15, 10, "_twisted_tree", false,false , "6" , new int[2]{0,52});
 			break;
 		case 13:
 			return new Character (id, "Cyclops", 200, 20, 10, "_cyclops", false,false , "5" , new int[1]{100});
@@ -70,7 +76,20 @@ public class EnemyCreator {
 			/// 
 			/// 
 			case 21:
-			return new Character (id, "Goblin", 80, 20, 10, "_goblin", false ,false, "5" , new int[1]{100});
+			return new Character (id, "Goblin", 80, 10, 10, "_goblin", false ,false, "5" , new int[4]{3,1,0,51});
+			break;
+
+
+
+
+
+			///////////////////////////// WATER OUTSKIRTS ////////////////////////////////
+			/// 
+			/// 
+			/// 
+			/// 
+		case 31:
+			return new Character (id, "Mana Sludge", 50, 8, 8, "_blob", false ,false, "10,6,5,9" , new int[1]{50});
 			break;
 
 			////////////////////////////// SPECIAL ENEMIES!!!! ////////////////////////////////
@@ -108,6 +127,10 @@ public class EnemyCreator {
 			break;
 		case 3: // PLAINS
 			return (Random.Range(21,31));
+			break;
+
+		case 4: // LAKE
+			return (Random.Range(31,41));
 			break;
 		}
 		return 0;

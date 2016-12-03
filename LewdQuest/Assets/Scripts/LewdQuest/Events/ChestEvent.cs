@@ -13,7 +13,7 @@ public class ChestEvent : Event {
 
 
 
-		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("chest");  
+			mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("chest");  
 		string flavor = "  You encounter an old, forgotten, wooden chest troughout your trip on the mountain. You realize that the chest could be opened if you carefully picked the lock. What do you do? ";
 		textPanel.GetComponentInChildren<Text>().text = flavor;
 
@@ -137,7 +137,7 @@ public class ChestEvent : Event {
 				//PlayerPrefs.SetInt ("hp", newHp);
 				itemManager.AddItemToInventory(0,1);
 				return "\n The chest was <b>rigged!</b> , but Lidia was cunning enough to see through this and she disabled the trap before anything could happen. She even discovers hidden loot " +
-					"on a secret spot. The item being protected was nothing but an HP+ potion.";
+					"on a secret spot. The item being protected was nothing but an HP Potion.";
 				break;
 
 			}

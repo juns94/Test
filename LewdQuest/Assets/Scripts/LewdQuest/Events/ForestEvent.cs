@@ -10,8 +10,7 @@ public class ForestEvent : Event {
 	GameObject buttonLidia;
 
 	public override void prepareScene(){
-
-
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("_wip");  
 		string flavor = "You walk around the forest for hours, but find nothing interesting.";
 		textPanel.GetComponentInChildren<Text>().text = flavor;
 

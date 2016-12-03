@@ -12,6 +12,8 @@ public class AssassinEvent : Event {
 	public override void prepareScene(){
 
 
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("_wip");  
+
 		string flavor = " You've been ambushed by a church assassin!!!";
 
 		textPanel.GetComponentInChildren<Text>().text = flavor;

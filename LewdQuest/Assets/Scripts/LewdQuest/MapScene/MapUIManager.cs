@@ -30,6 +30,25 @@ public class MapUIManager : MonoBehaviour {
 
 		currentEnergy 	= PlayerPrefs.GetInt ("energy", 100);
 		itemPanel = itemUI.transform.GetChild (1).gameObject;
+
+
+
+
+		Button[] buttons = overMapButtons.GetComponentsInChildren<Button> ();
+		foreach (Button button in buttons) {
+			if (button.name.Contains ("!")) {
+				Debug.Log (button.gameObject.name);
+				if (PlayerPrefs.GetInt (button.gameObject.name, 0) == 1) {
+					button.gameObject.SetActive (true);
+				
+				} else {
+					button.gameObject.SetActive (false);
+				}
+			}
+
+		}
+
+
 	}
 	
 	// Update is called once per frame

@@ -15,7 +15,7 @@ public class Slot : MonoBehaviour, IDropHandler{
 
 	public void OnDrop (PointerEventData eventData)
 	{
-
+		if(DragHandler.itemDragged != null)
 		if (!item) {
 			DragHandler.itemDragged.transform.SetParent (transform);
 
@@ -37,7 +37,7 @@ public class Slot : MonoBehaviour, IDropHandler{
 			int itemState = PlayerPrefs.GetInt (item.transform.name, 0);
 			PlayerPrefs.SetInt (item.transform.name, PlayerPrefs.GetInt(DragHandler.itemDragged.name,0));
 			PlayerPrefs.SetInt (DragHandler.itemDragged.name, itemState);
-			Transform aux = DragHandler.itemDragged.transform.parent;
+			Transform aux = DragHandler.startParent;
 			DragHandler.itemDragged.transform.SetParent(transform); 
 			item.transform.SetParent(aux);  
 		}

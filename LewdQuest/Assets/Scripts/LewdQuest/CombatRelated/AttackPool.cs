@@ -19,13 +19,13 @@ public class AttackPool {
 			return new Attack ("Low Heal" , 1 , " <b>heals</b> their party with arcane magic." , Attack.TYPE.HEAL);
 			break;
 		case 3:
-			return new Attack ("Masturbate" , 1 , " cannot contain themselves and masturbates furiously" , Attack.TYPE.LEWD);
+			return new Attack ("Masturbate" , 1 , " cannot contain themselves and masturbates furiously." , Attack.TYPE.LEWD);
 			break;
 		case 4:
-			return new Attack ("Sword Lunge" , 1.3f , " lunges their sword furiously towards you" , Attack.TYPE.DAMAGE);
+			return new Attack ("Sword Lunge" , 1.3f , " lunges their sword furiously towards you." , Attack.TYPE.DAMAGE);
 			break;
 		case 5:
-			return new Attack ("Kick" , 1 , " gives you a vicous kick." , Attack.TYPE.DAMAGE);
+			return new Attack ("Kick" , 1 , " gives you a vicious kick." , Attack.TYPE.DAMAGE);
 			break;
 		case 6:
 			return new Attack ("Vine Attack" , 1 , " slashes you with their eerie tentacles." , Attack.TYPE.DAMAGE);
@@ -34,8 +34,15 @@ public class AttackPool {
 			return new Attack ("Spear" , 1 , " pierces through you with their weapon." , Attack.TYPE.DAMAGE);
 			break;
 		case 8:
-			return new Attack ("Club Smash" , 2 , " smashes you with their huge club\t." , Attack.TYPE.DAMAGE);
+			return new Attack ("Club Smash" , 2 , " smashes you with their huge club." , Attack.TYPE.DAMAGE);
 			break;
+		case 9:
+			return new Attack ("Blob Heal" , 2 , " <b> heals </b> itself in a gruesome display." , Attack.TYPE.HEAL);
+			break;
+		case 10:
+			return new Attack ("Toughen up" , 2 , " Prepares for enemy attacks and boosts up their defence." , Attack.TYPE.BUFF);
+			break;
+
 
 
 		}

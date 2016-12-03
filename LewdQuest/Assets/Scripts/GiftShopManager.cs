@@ -22,8 +22,11 @@ public class GiftShopManager : MonoBehaviour {
 	bool blushing;
 
 	void Start () {
-
-		dialogManager.showBoxAutoHide	 (new string[]{ "Alisa: Welcome!" });	
+		if (PlayerPrefs.GetInt ("giftits", 0) == 1) {
+			dialogManager.showBoxAutoHide (new string[]{ "Alisa: Oh... it's you... Welcome." });	
+		} else {
+			dialogManager.showBoxAutoHide (new string[]{ "Alisa: Welcome!" });	
+		}
 		itemContainer = this.GetComponent<ItemContainer> ();
 		AddItemsToShop ();
 		UIGold.text		 	= "Gold: " +PlayerPrefs.GetInt ("gold", 0);
@@ -47,6 +50,7 @@ public class GiftShopManager : MonoBehaviour {
 				PlayerPrefs.SetInt ("gold", currentGold - currentPrice);
 				PlayerPrefs.Save ();
 				updateUI ();
+				gameObject.GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/money\t"));
 			}
 		} else {
 			scold ();
@@ -128,7 +132,7 @@ public class GiftShopManager : MonoBehaviour {
 			dialogManager.showBox (new string[]{ "Alisa: Hey! Watch it!" });			break;
 		case 1 :dialogManager.showBox (new string[]{"Alisa: Those are not for sale!" });break;
 		case 2 :dialogManager.showBox (new string[]{"Alisa: I'm going to kick you out!" });break;
-		case 3 :dialogManager.showBox (new string[]{"Alisa: I am dead serious!!" });break;
+		case 3 :dialogManager.showBoxShake (new string[]{"Alisa: I am dead serious!!" });break;
 		case 4:
 			dialogManager.showBox (new string[]{ "Alisa: Prices just went up for you, how's that?" });
 			blushing = true; 
@@ -138,8 +142,9 @@ public class GiftShopManager : MonoBehaviour {
 		case 7:
 			dialogManager.showBox (new string[]{ "Alisa: That's it, you're getting <b>OUT</b>. " });
 			Invoke ("exitShop", 1.5f);
-			break;
 			PlayerPrefs.SetInt ("giftits", 1);
+			PlayerPrefs.Save ();
+			break;
 		}
 
 		timesTouched++;

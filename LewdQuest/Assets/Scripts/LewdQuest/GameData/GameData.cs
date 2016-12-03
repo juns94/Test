@@ -32,11 +32,14 @@ public class GameData {
 		foreach (Character character in party) {
 			character.hp = character.totalHP;
 			character.alive = true;
+			character.horny = 0;
 		}
 		DataAccess.Save (this);
 
 	}
-
+	/// <summary>
+	/// GET A SLUT BY ID, RETURNS NULL IF SHES NOT IN THE PARTY
+	/// </summary>
 	public Character getCharacterById( int id){
 
 		foreach (Character character in party) {

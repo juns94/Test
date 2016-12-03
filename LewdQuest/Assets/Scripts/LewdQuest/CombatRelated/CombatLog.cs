@@ -79,7 +79,7 @@ public class CombatLog : MonoBehaviour {
 			return;
 		}
 
-		switch(Random.Range(0,3)){
+		switch(Random.Range(0,5)){
 
 		case 0:
 			text.text += "\n \n" + name + " groans and slumps on the ground as she faces death.";
@@ -92,6 +92,9 @@ public class CombatLog : MonoBehaviour {
 			break;
 		case 3:
 			text.text += "\n \n" + name + " gives a last cry of pain. Her hand struggles to move up, but it finally gives up and her eyes close.";
+			break;
+		case 4:
+			text.text += "\n \n" + name + " lands on the ground as she is knocked out.";
 			break;
 
 		}

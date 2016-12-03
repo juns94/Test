@@ -11,10 +11,8 @@ public class StartScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	//	PlayerPrefs.DeleteAll ();	
-		HeroUtils.setHero ();
 		Invoke ("startAnimation", 1f);
 		Invoke ("displayButtons", 2.5f);
-		PlayerPrefs.SetString("items","0,4;1,2;2,1;3,10")	;
 	}
 	
 	// Update is called once per frame
@@ -35,6 +33,22 @@ public class StartScript : MonoBehaviour {
 
 	public void GoToMap(){
 
+		load ();
+
+	}
+
+	public void startNew(){
+
+		PlayerPrefs.DeleteAll ();
+		PlayerPrefs.Save ();
+		DataAccess.RESET ();
+		PlayerPrefs.SetString("items","0,4;1,2;2,1;3,10")	;
+		HeroUtils.setHero ();
+		SceneManager.LoadScene ("IntroScene");
+	}
+
+	void load(){
+		HeroUtils.setHero ();
 		SceneManager.LoadScene ("MapScene");
 
 	}
