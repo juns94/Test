@@ -66,6 +66,7 @@ public class UIManagerScript : MonoBehaviour {
 				Character character 			= null;
 				GameObject newItem;
 
+	
 				if (safe) character = reRollCharacter (EnemyCreator.create (region, -1), region);
 				else 	  character = EnemyCreator.create (4,4);
 				if(character.id == 14 | character.id == 13)
@@ -79,6 +80,11 @@ public class UIManagerScript : MonoBehaviour {
 				newItem.GetComponentsInChildren<Text> () [2].text = character.getName ();
 				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> ("Portraits/"+character.image);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
+
+				DialogHub dialog = DialogPool.get (character.id);
+				if(dialog.initialDialog != null)
+					combatLog.logText ("<size=28><b>" + character.name +" exclaims</b>:<i> \"" + dialog.initialDialog + "\"</i></size>");
+			
 			}
 
 

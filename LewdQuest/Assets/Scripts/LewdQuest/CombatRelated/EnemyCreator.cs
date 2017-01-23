@@ -15,7 +15,7 @@ public class EnemyCreator {
 
 		if (absoluteId == -1) {
 			id = getIdByRegion (region);
-			Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
+			//Debug.Log (" El id generado inicialmente es " + id + " y lo tenia: " + PlayerPrefs.GetInt (id + "", 0));
 			if (PlayerPrefs.GetInt ("" + id, 0) > 0) {
 				////// IF THE ENEMY HAS ALREADY BEEN RECRUITED!!!!
 				id = reRollId (region, id);

@@ -78,9 +78,12 @@ public class EventManager : MonoBehaviour {
 				case 1:
 					return gameObject.AddComponent<ChestEvent> ();
 				case 2:
-					return gameObject.AddComponent<AssassinEvent> ();
+					return gameObject.AddComponent<ChestEvent> ();
 				case 3:
-					return gameObject.AddComponent<AssassinEvent> ();
+					if (!(PlayerPrefs.GetInt ("200", 0) > 0))
+						return gameObject.AddComponent<AssassinEvent> ();
+					else
+						return createEvent (region);
 				case 4:
 					return gameObject.AddComponent<ChestEvent> ();
 				}

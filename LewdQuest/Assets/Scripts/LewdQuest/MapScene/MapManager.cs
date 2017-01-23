@@ -8,6 +8,7 @@ public class MapManager : MonoBehaviour {
 
 
 	public int region = 0;
+	private int currentRegionStepped;
 	void Start () {
 		DontDestroyOnLoad (this);
 	}
@@ -16,6 +17,10 @@ public class MapManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.G)) {
 			PlayerPrefs.SetInt ("gold", 600);
 		}
+	}
+
+	public void setCurrentRegionStepped(int reg){
+		currentRegionStepped = reg;
 	}
 
 	public int getEnemyNumber(){
@@ -27,6 +32,9 @@ public class MapManager : MonoBehaviour {
 		switch (region) {
 		case 1: ///FOREST
 			number = (Random.Range (0, 2) + Random.Range (0, 2) + Random.Range (0, 2));
+			break;
+
+		case 2: ///MOUNTAINS
 			break;
 
 
@@ -48,6 +56,7 @@ public class MapManager : MonoBehaviour {
 
 
 	public void rest(){
+		GameObject.Find ("FadingObj").GetComponent<Fader> ().blink ();
 		PlayerPrefs.SetInt ("hp",PlayerPrefs.GetInt("hpTotal",0	));
 		PlayerPrefs.SetInt ("energy", 100);
 		PlayerPrefs.Save ();
@@ -208,7 +217,7 @@ public class MapManager : MonoBehaviour {
 	public void encounterPlains(){
 		if (hasEnergyCheck ()) {
 			region = 3;
-			if (Random.Range (0, 5) == 	4)
+			if (Random.Range (1, 5) == 	4)
 				SceneManager.LoadScene ("EncounterScene");
 			else
 				transition ();
@@ -257,6 +266,37 @@ public class MapManager : MonoBehaviour {
 		DataAccess.RESET ();
 		PlayerPrefs.DeleteAll ();
 		PlayerPrefs.Save ();
+		HeroUtils.setHero ();
+
+
+	}
+
+	public void encounter(){
+
+		switch (currentRegionStepped) {
+		case 1:
+			encounterForest ();
+			break;
+		case 2:
+			encounterMountain ();
+			break;
+		case 3:
+			encounterPlains ();
+			break;
+		case 4: 
+			encounterLake ();
+			break;
+		case 100: 
+			rest();
+			break;	
+
+		case 90: 
+			goToGrandCity();
+			break;
+
+
+		
+		}
 
 
 	}

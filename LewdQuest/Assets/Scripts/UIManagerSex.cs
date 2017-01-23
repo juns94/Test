@@ -272,17 +272,19 @@ public class UIManagerSex : MonoBehaviour {
 	}
 
 	public void openFuckPanel(){
-		
+		///		   TODO   WARNING, THE CHARACTER IS NULL MOST LIKELY
+		/// 	///TODO   WARNING, THE CHARACTER IS NULL MOST LIKELY
+		/// 	///TODO   WARNING, THE CHARACTER IS NULL MOST LIKELY
+		/// 	///TODO   WARNING, THE CHARACTER IS NULL MOST LIKELY
 		Character character = gameData.getCharacterById(0);
 		GameObject panel = partyInfo;
-		//GameObject panel  = GameObject.Find ("PartyInfo");
 		LewdUtilities.deleteAllButtons(panel);
-		Scene scene = LewdSceneManager.getSceneFromId (character.id, character.horny);
+		Scene scene;
 		Debug.Log (container);
 		scene = container.getScene ();
 		if (scene != null) {
 			
-
+					///TODO   WARNING, THE CHARACTER IS NULL MOST LIKELY
 					this.gameObject.AddComponent<SceneManagerScript>();
 					SceneManagerScript sceneManager = this.gameObject.GetComponent<SceneManagerScript>();
 					sceneManager.setEverything(enemyPanel, panel,scene,character,this);

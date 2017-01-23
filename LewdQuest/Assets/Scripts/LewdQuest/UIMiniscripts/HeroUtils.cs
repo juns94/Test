@@ -35,7 +35,7 @@ public static class HeroUtils
 
 	public static Character getHero(){
 
-		return new Character (-1, "Yourself", getTotalHP(),1,getAttack(),getMagic(),"",false);
+		return new Character (-1, "Yourself", getTotalHP(),getAttack(),getMagic(),"",false);
 
 	}
 

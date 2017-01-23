@@ -14,7 +14,8 @@ public class MapUIManager : MonoBehaviour {
 	public GameObject energyGUI;
 	public GameObject itemUI;
 	public GameObject goldUI;
-
+	public GameObject exploreGUI;
+	public GameObject restGUI;
 	public GameObject overMapButtons;
 	public GameObject MapImage;
 
@@ -76,7 +77,12 @@ public class MapUIManager : MonoBehaviour {
 
 
 
-//	public void 
+	public void setExploreButtonState(bool state){
+		exploreGUI.SetActive (state);
+	}
+	public void setRestButtonState(bool state){
+		restGUI.SetActive (state);
+	}
 
 
 

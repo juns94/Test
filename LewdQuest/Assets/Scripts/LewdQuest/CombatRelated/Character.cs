@@ -39,7 +39,7 @@ public class Character  {
 
 
 
-	public Character(int id, string name,int hp , int level, int attack , int magicPower, string image , bool female){
+	public Character(int id, string name,int hp , int attack , int magicPower, string image , bool female){
 		this.id = id;
 		this.hp = hp;
 		this.totalHP = hp;
@@ -165,5 +165,9 @@ public class Character  {
 
 	public Attack getRandomAttack(){
 		return attackList[Random.Range(0, attackList.Count)];
+	}
+
+	public DialogHub getDialogHub(){
+		return DialogPool.get (id);
 	}
 }

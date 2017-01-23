@@ -7,6 +7,8 @@ public abstract class SceneHub  {
 	public int count = 0;
 	public string refuseText;
 	public string acceptText;
+
+
 	//public string refuseText;
 	/*
 	public string sceneText { get; set; }

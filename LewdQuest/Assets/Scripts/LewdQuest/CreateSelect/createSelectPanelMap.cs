@@ -27,7 +27,7 @@ public class createSelectPanelMap : MonoBehaviour {
 
 
 			
-		Character character = new Character (0, "You", 230, 1, 1, 1, "", false);
+		Character character = new Character (0, "You", 230,1, 1, "", false);
 		character.hp = PlayerPrefs.GetInt ("hp", 230);
 		//party.Add (character);
 		for (int x = 0; x < 100; x++) {

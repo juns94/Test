@@ -19,7 +19,7 @@ public class PartyManager : MonoBehaviour {
 
 	void Start () {
 
-		gameData 		= LewdUtilities.getGameData (GameObject.Find ("GameData"));
+		gameData 		= LewdUtilities.getGameData(GameObject.Find ("GameData"));
 		bitches 		= getBitches();
 		partyBitches 	= getPartyBitches ();/*
 		detailPanel 	= GameObject.Find ("DetailPanel");

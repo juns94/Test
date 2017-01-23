@@ -43,7 +43,8 @@ public class LewdUtilities : MonoBehaviour  {
 	public static GameData getGameData( GameObject GO){
 		GameData temp;
 		if (GO != null) {
-			temp = GO.GetComponent<GameDataContainer> ().getData ();
+			return DataAccess.Load ();
+			//temp = GO.GetComponent<GameDataContainer> ().getData();
 			if (temp == null) {
 				return DataAccess.Load ();
 			}

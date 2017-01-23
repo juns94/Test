@@ -8,6 +8,7 @@ public class CombatLog : MonoBehaviour {
 	ArrayList textQueue;
 	string textToAdd ="";
 
+
 	public void setup() {
 		textQueue = new ArrayList ();
 		text = GetComponent<Text> ();
@@ -105,6 +106,8 @@ public class CombatLog : MonoBehaviour {
 
 
 	}
+
+
 
 
 	public void logGreen(string newText){
