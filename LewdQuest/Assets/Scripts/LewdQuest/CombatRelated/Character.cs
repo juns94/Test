@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Character  {
 
 
-
+//	public DialogHub dialogHub { get; set; }
 	public int id;
 	public string name;
 	public int attack;
@@ -35,6 +35,14 @@ public class Character  {
 	public int obedience{ get; set; }
 	public int horny{ get; set; }
 	public int love{ get; set; }
+
+	public enum SIZE
+	{
+		SMALL,
+		BIG
+	}
+
+	public SIZE size;
 
 
 
@@ -168,6 +176,9 @@ public class Character  {
 	}
 
 	public DialogHub getDialogHub(){
-		return DialogPool.get (id);
+		//if (dialogHub == null) {
+		//	dialogHub =  DialogPool.get(id);
+	//	}
+		return DialogPool.get(id);
 	}
 }

@@ -303,12 +303,19 @@ public class MapManager : MonoBehaviour {
 
 
 	public void goToParty(){
+		GameObject.Find ("YOU").GetComponent<MapMovementController>().saveCurrentPosition();
 		SceneManager.LoadScene ("PartyScene");
 	}
 
 	public void goToGrandCity(){
-		Destroy(GameObject.Find ("MapManager"));
-		SceneManager.LoadScene ("GrandCityScene");
+
+		if (LewdUtilities.getPartyBitches ().Count > 0 & PlayerPrefs.GetInt ("Augustus", 0) == 0) {
+			region = 201;		
+			SceneManager.LoadScene ("EncounterScene");
+		} else {
+			Destroy (GameObject.Find ("MapManager"));
+			SceneManager.LoadScene ("GrandCityScene");
+		}
 	}
 
 	public void goToMap(){
@@ -318,6 +325,7 @@ public class MapManager : MonoBehaviour {
 	}
 
 	public void goToStats(){
+		GameObject.Find ("YOU").GetComponent<MapMovementController>().saveCurrentPosition();
 		Destroy(GameObject.Find ("MapManager"));
 		SceneManager.LoadScene ("StatsScene");
 
@@ -326,6 +334,7 @@ public class MapManager : MonoBehaviour {
 
 
 	public bool hasEnergyCheck(){
+		return true;/*
 
 		if (PlayerPrefs.GetInt ("energy", 100) > 0) {
 			PlayerPrefs.SetInt ("energy", PlayerPrefs.GetInt ("energy", 100) - 10);
@@ -334,6 +343,6 @@ public class MapManager : MonoBehaviour {
 
 		}
 			
-		return false;
+		return false;*/
 	}
 }

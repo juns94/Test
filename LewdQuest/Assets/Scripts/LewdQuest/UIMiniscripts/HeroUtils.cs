@@ -40,10 +40,11 @@ public static class HeroUtils
 	}
 
 	public static void saveHero( Character character ){
-
-		PlayerPrefs.SetInt("attack" , character.attack		);
-		PlayerPrefs.SetInt("magic"  , character.magicPower  );
-		PlayerPrefs.SetInt("hpTotal", character.getTotalHp());
+		PlayerPrefs.SetInt("hp" 	 , character.hp			);
+		PlayerPrefs.SetInt("hpTotal" , character.totalHP	);
+		PlayerPrefs.SetInt("attack"  , character.attack		);
+		PlayerPrefs.SetInt("magic"   , character.magicPower );
+		PlayerPrefs.SetInt("hpTotal" , character.getTotalHp());
 		PlayerPrefs.Save ();
 	}
 

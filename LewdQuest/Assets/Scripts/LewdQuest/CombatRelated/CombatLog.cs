@@ -46,16 +46,29 @@ public class CombatLog : MonoBehaviour {
 		
 	}
 
+	public void logText(string newText, bool skipLine){
+		if (newText.Length > 1) {
+			string arrayListItem = "";
+			if (skipLine)
+				arrayListItem += "\n";
+			arrayListItem +=  newText;
+			arrayListItem += "\n";
+
+
+			textQueue.Add (arrayListItem);
+		}
+	}
 
 	public void logText(string newText){
-		string arrayListItem = "";
+		if (newText.Length > 1) {
+			string arrayListItem = "";
 	
-		arrayListItem += "\n\n" + newText;
-		arrayListItem += "\n";
+			arrayListItem += "\n\n" + newText;
+			arrayListItem += "\n";
 
 
-		textQueue.Add (arrayListItem);
-
+			textQueue.Add (arrayListItem);
+		}
 	}
 
 	public void logEnemyText( string newText){

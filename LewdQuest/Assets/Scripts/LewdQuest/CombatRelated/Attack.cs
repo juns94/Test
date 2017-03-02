@@ -19,6 +19,14 @@ public class Attack  {
 		LEWD
 	}
 
+	public enum SUBTYPE{
+		ROCK,
+		PAPER,
+		SCISSOR,
+		LEWD
+	}
+
+
 
 	public Attack(string name, float damage , string flavorText , TYPE type){
 

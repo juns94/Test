@@ -13,7 +13,7 @@ public class EventManager : MonoBehaviour {
 	public GameObject dialogPanel;
 	public ItemManager itemManager;
 	public GameObject scriptedFight;
-
+	public GameObject npcImage;
 		
 	void Start () {
 		mapManager = GameObject.Find("MapManager");
@@ -31,6 +31,7 @@ public class EventManager : MonoBehaviour {
 		currentEvent.dialogPanel	= dialogPanel;
 		currentEvent.itemManager 	= itemManager;
 		currentEvent.scriptFight 	= scriptedFight;
+		currentEvent.npcImage 		= npcImage;
 		currentEvent.prepareScene ();
 	
 	}
@@ -112,6 +113,13 @@ public class EventManager : MonoBehaviour {
 				case 4:
 					return gameObject.AddComponent<ChestEvent> ();
 				}
+				break;
+			}
+
+
+		case 201:
+			{	
+				return gameObject.AddComponent<AugustusEvent> ();
 				break;
 			}
 

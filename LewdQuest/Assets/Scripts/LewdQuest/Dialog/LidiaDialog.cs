@@ -6,7 +6,8 @@ public class LidiaDialog : DialogHub {
 		this.defaultReplies = new string[] {
 			" Stop resisting! I'm trying to stab you!" ,
 			" Didn't your mother teach you not to go alone in the forest?" ,
-			" Hand over the purse of coins already."
+			" Hand over the purse of coins already.",
+			" Why won't you die already?!"
 		};
 		this.initialDialog = "Give up your gold idiot or I'm gonna make your face even uglier!";
 	

@@ -76,7 +76,7 @@ public class EnemyCreator {
 			/// 
 			/// 
 			case 21:
-			return new Character (id, "Goblin", 80, 10, 10, "_goblin", false ,false, "5" , new int[4]{3,1,0,51});
+			return new Character (id, "Goblin", 35, 10, 10, "_gobbo", false ,false, "5" , new int[4]{3,1,0,51});
 			break;
 
 
@@ -100,6 +100,9 @@ public class EnemyCreator {
 			///
 		case 200:
 			return new Character (id, "Church Assassin", 150, 20, 20, "_nun", true,true, "5,4" , new int[1]{101});
+			break;
+		case 201:
+			return new Character (id, "General Augustus", 200, 20, 20, "_augustus", false,false, "5,4" , new int[1]{101});
 			break;
 
 		default : return create(region,-1);

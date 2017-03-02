@@ -16,7 +16,7 @@ public class RunningEvent: Event {
 	public override void prepareScene(){
 
 
-		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("_wip");  	
+		mainImage.GetComponent<Image>().sprite = Resources.Load <Sprite> ("plains_run");  	
 		ArrayList temp = LewdUtilities.getPartyBitches ();
 		try{
 		gameData = LewdUtilities.getGameData (GameObject.Find("GameData"));

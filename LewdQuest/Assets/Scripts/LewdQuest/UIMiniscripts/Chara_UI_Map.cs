@@ -5,6 +5,7 @@ public class Chara_UI_Map  {
 
 	private GameObject gameObject;
 	private Character character;
+	private DialogHub dialogHub;
 
 
 
@@ -13,6 +14,12 @@ public class Chara_UI_Map  {
 		this.character = y;
 	}
 
+
+	public Chara_UI_Map(GameObject x , Character y,DialogHub hub ){
+		this.gameObject = x;
+		this.character = y;
+		this.dialogHub = hub;
+	}
 
 
 	public GameObject getGameObject() {
@@ -23,5 +30,8 @@ public class Chara_UI_Map  {
 		return character;
 	}
 
+	public DialogHub getHub(){
+		return dialogHub;
+	}
 
 }

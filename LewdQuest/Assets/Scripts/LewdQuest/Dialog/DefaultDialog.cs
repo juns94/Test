@@ -5,7 +5,7 @@ public class DefaultDialog : DialogHub{
 
 	public DefaultDialog(){
 		this.initialDialog = null;
-		this.defaultReplies = new string[]{"doesn't seem interested in talking with you" };
+		//this.defaultReplies = new string[]{"doesn't seem interested in talking with you" };
 	}
 
 }

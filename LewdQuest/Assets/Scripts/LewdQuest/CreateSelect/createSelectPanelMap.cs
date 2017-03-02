@@ -12,7 +12,7 @@ public class createSelectPanelMap : MonoBehaviour {
 	public GameObject button;
 	public GameObject panel;	
 	public GameObject empty;
-	//public UIManagerScript manager;
+	public MapMovementController movement;
 	public ItemManager itemManager;
 	GameObject panelParent;
 	GameObject popUp;
@@ -21,13 +21,14 @@ public class createSelectPanelMap : MonoBehaviour {
 	Character you;
 	// Use this for initialization
 	void Start () {
-		gameData = LewdUtilities.getGameData (GameObject.Find("GameData"));
+		
+		gameData = LewdUtilities.getGameData(GameObject.Find("GameData"));
 		itemManager = GetComponent<ItemManager>();
 		party = new ArrayList ();
 
 
 			
-		Character character = new Character (0, "You", 230,1, 1, "", false);
+		Character character = HeroUtils.getHero ();
 		character.hp = PlayerPrefs.GetInt ("hp", 230);
 		//party.Add (character);
 		for (int x = 0; x < 100; x++) {
@@ -38,7 +39,7 @@ public class createSelectPanelMap : MonoBehaviour {
 			}
 		}
 
-		//you = character;
+		you = character;
 
 
 	}
@@ -75,7 +76,7 @@ public class createSelectPanelMap : MonoBehaviour {
 
 
 
-		ArrayList enemyMap = party;
+		ArrayList partyMap = party;
 		panelParent = GameObject.Find ("ItemContainer");
 		//	if (enemyMap.Count > 1 & aliveCount () > 1) {
 
@@ -91,10 +92,10 @@ public class createSelectPanelMap : MonoBehaviour {
 
 
 
-		for (int x = 0; x < enemyMap.Count; x++) {
-			Character character = gameData.getCharacterById(((Character)enemyMap [x]).id);
+		for (int x = 0; x < partyMap.Count; x++) {
+			Character character = gameData.getCharacterById(((Character)partyMap[x]).id);
 
-			if (character.getAlive ()) {
+		//	if (character.getAlive ()) {	
 				GameObject buttonPopUp 								= Instantiate (button);
 				buttonPopUp.transform.parent 						= popUp.transform;
 				buttonPopUp.transform.localScale 					= Vector3.one;
@@ -111,11 +112,9 @@ public class createSelectPanelMap : MonoBehaviour {
 					itemManager.hideItemPanel();
 					itemManager.removeItem(itemId);
 					}
+					movement.deactivate(false);
 
 				});
-
-		
-			}
 
 		}
 
@@ -127,12 +126,14 @@ public class createSelectPanelMap : MonoBehaviour {
 		youButton.GetComponentInChildren<Text> ().text = "You";
 		youButton.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 			selectAction (itemId,you);
+			HeroUtils.saveHero(you);
 			Destroy (popUp);
 			enableOldGui ();	
 			if(itemManager!= null){
 			itemManager.hideItemPanel();
 			itemManager.removeItem(itemId);
 			}
+			movement.deactivate(false);
 			//animator.Play("itemPanelSlideOut");
 			//this.gameObject.GetComponent<Button> ().enabled = true;
 		});

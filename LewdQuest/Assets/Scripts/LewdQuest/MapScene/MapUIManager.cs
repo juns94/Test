@@ -30,7 +30,7 @@ public class MapUIManager : MonoBehaviour {
 		totalEnergy = 100;
 
 		currentEnergy 	= PlayerPrefs.GetInt ("energy", 100);
-		itemPanel = itemUI.transform.GetChild (1).gameObject;
+		//itemPanel = itemUI.transform.GetChild (1).gameObject;
 
 
 
@@ -85,7 +85,7 @@ public class MapUIManager : MonoBehaviour {
 	}
 
 
-
+	/*
 	public void showItemPanel(){
 
 		itemPanel.GetComponent<Animator>().Play ("itemPanelSlide");
@@ -94,5 +94,5 @@ public class MapUIManager : MonoBehaviour {
 	public void hideItemPanel(){
 	//	partyButtons.SetActive (true);
 		itemPanel.GetComponent<Animator>().Play ("itemPanelSlideOut");
-	}
+	}*/
 }

@@ -34,9 +34,15 @@ namespace Prime31.TransitionKit
 
 			public void shiftVerts( Vector3 offset, Vector3[] verts )
 			{
-				for( var i = 0; i < 4; i++ )
-					verts[_vertIndices[i]] = _initialPositions[i] + offset;
+				try {
+					for( var i = 0; i < 4; i++ )
+						verts[_vertIndices[i]] = _initialPositions[i] + offset;	
+				} 	
+				catch (System.Exception ex) {
+
+				}
 			}
+
 		}
 
 

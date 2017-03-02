@@ -10,10 +10,14 @@ public class DialogPool {
 		//case 0: return
 		case 2: return new LidiaDialog();
 		
-		
-		
+			//case 0: return
+		case 14: return new BarbaraDialog();
+			
+
 		
 		case 31: return new ManaBlobDialog();
+
+
 		default:
 			return new DefaultDialog();
 
