@@ -108,12 +108,12 @@ public class MapManager : MonoBehaviour {
 	
 
 
-
+			/*
 		case 3:
 			var ripple = new RippleTransition () {
 				nextScene = 2,
 				duration = 1.0f,
-				amplitude = 1500f,
+				amplitude = 1000f,
 				speed = 20f
 			};
 			TransitionKit.instance.transitionWithDelegate (ripple);

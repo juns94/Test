@@ -28,7 +28,7 @@ public class UIManagerScript : MonoBehaviour {
 	public GameObject buddyUI;
 	public GameObject buddyButtons;
 	public GameObject partyButtons;
-	public GameObject buddyAttackBtn;
+	public GameObject[] buddyAttackBtns;
 
 	string riggedFlagName;
 	public bool safe = true;
@@ -74,7 +74,7 @@ public class UIManagerScript : MonoBehaviour {
 				newItem.transform.localPosition = Vector3.zero;
 				newItem.GetComponentsInChildren<Text>  () [2].text 			 = character.getName ();
 				newItem.GetComponentsInChildren<Image> () [3].overrideSprite = Resources.Load <Sprite> ("Portraits/"+character.image);
-
+				newItem.GetComponentsInChildren<Image> () [5].color = LewdUtilities.getTypeColor (character.type);
 				if(character.getDialogHub().initialDialog != null){
 					combatLog.logText ("<size=28><b>" + character.name +" exclaims</b>:<i> \"" + character.getDialogHub().initialDialog + "\"</i></size>");
 				}
@@ -99,8 +99,9 @@ public class UIManagerScript : MonoBehaviour {
 				newItem.transform.parent 		= enemyPanel.gameObject.transform;
 				newItem.transform.localScale 	= Vector3.one;
 				newItem.transform.localPosition = Vector3.zero;
-				newItem.GetComponentsInChildren<Text> () 	[2].text = character.getName ();
+				newItem.GetComponentsInChildren<Text>  () 	[2].text = character.getName ();
 				newItem.GetComponentsInChildren<Image> () 	[3].overrideSprite = Resources.Load <Sprite> ("Portraits/"+character.image);
+				newItem.GetComponentsInChildren<Image> () 	[5].color = LewdUtilities.getTypeColor (character.type);
 				enemyMap.Add (new Chara_UI_Map (newItem, character));
 			}
 			Destroy (rigged);	
@@ -201,10 +202,10 @@ public class UIManagerScript : MonoBehaviour {
 			Image[] images = null;
 			GameObject currentUI 	= ((Chara_UI_Map)enemyMap [x]).getGameObject ();
 			Character currentChara 	= ((Chara_UI_Map)enemyMap [x]).getCharacter ();
-		//	if (currentUI != null) {
+			if (currentUI != null) {
 				images = currentUI.GetComponentsInChildren<Image> ();
 				currentUI.GetComponentInChildren<HpDecreaseSlow> ().setDamage ((float)currentChara.getHp (), (float)currentChara.getTotalHp ());
-		//	}
+			}
 
 
 			if (currentChara.horny > 69) {
@@ -367,12 +368,20 @@ public class UIManagerScript : MonoBehaviour {
 			Character buddy = ((Chara_UI_Map)partyMap [1]).getCharacter ();
 
 			int attackPower= buddy.attack;
+		
 			if (attack.type == Attack.TYPE.MAGIC)
 				attackPower = buddy.magicPower;
+			if (LewdUtilities.isWeak (enemy.type, attack.subType)) {
+				enemy.receiveDamage (Mathf.RoundToInt (Random.Range (attackPower, attackPower + 3) * 1.4f));
+				((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot (Resources.Load <AudioClip> ("Sounds/CritSound/hit" + Random.Range (1, 4)));
+				((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Critical");
+			} else {
 			
-			enemy.receiveDamage (Random.Range(attackPower , attackPower + 3));
-			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
-			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,7)));
+				enemy.receiveDamage (Random.Range (attackPower, attackPower + 3));
+				((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot (Resources.Load <AudioClip> ("Sounds/hit" + Random.Range (1, 7)));
+				((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
+			}
+
 			combatLog.logText (buddy.name +" attacks " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with "+attack.getName()+".");
 		}
 		Invoke("setEnemyTurn", 0.5f);
@@ -428,12 +437,24 @@ public class UIManagerScript : MonoBehaviour {
 	}
 			
 
-	public void dealDamageParty(int position, int damage){
+	public void dealDamageParty(int position, int damage, Attack.SUBTYPE subType){
+		
+		Debug.Log ("position: " + position + " damage: " + damage);
 		GameObject currentUI = ((Chara_UI_Map)partyMap [position]).getGameObject ();
 		Character  character = ((Chara_UI_Map)partyMap [position]).getCharacter ();
 		if (character.getAlive ()) {
 			int totalalive = LewdUtilities.aliveCount (this);
 
+
+			if (LewdUtilities.isWeak (character.type, subType)) {
+				character.receiveDamage (Mathf.RoundToInt (Random.Range (damage, damage + 3) * 1.3f));
+				//((Chara_UI_Map)partyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot (Resources.Load <AudioClip> ("Sounds/CritSound/hit" + Random.Range (1, 4)));
+			} else {
+
+				character.receiveDamage (Random.Range(damage-2 , damage + 2));
+				//((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot (Resources.Load <AudioClip> ("Sounds/hit" + Random.Range (1, 7)));
+
+			}
 			character.receiveDamage (Random.Range(damage-2 , damage + 2));
 
 			if (position == 0) {
@@ -444,6 +465,8 @@ public class UIManagerScript : MonoBehaviour {
 			}
 
 			} 
+	
+
 		}
 		
 	public void actEnemyTurn(){
@@ -476,7 +499,7 @@ public class UIManagerScript : MonoBehaviour {
 		if (character.getAlive ()) {
 			int attack= ((Chara_UI_Map)partyMap [0]).getCharacter ().attack;
 			character.receiveDamage (Random.Range(attack ,attack + 3));
-			//character.receiveDamage (Random.Range(4,7));
+
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<Animator> ().Play ("Hit");
 			((Chara_UI_Map)enemyMap [position]).getGameObject ().GetComponent<AudioSource> ().PlayOneShot(Resources.Load <AudioClip>("Sounds/hit"+ Random.Range(1,7)));
 			combatLog.logText ("You attack " + ((Chara_UI_Map)enemyMap [position]).getCharacter().name +" with your fists.");
@@ -533,10 +556,12 @@ public class UIManagerScript : MonoBehaviour {
 		List<Attack> attacks = buddy.attackList;
 		for (int i = 0; i < attacks.Count; i++) {
 			Attack attack = attacks [i];
-			GameObject button = Instantiate (buddyAttackBtn);
+			GameObject button = Instantiate(buddyAttackBtns[LewdUtilities.getAttackButtonNumber(attack.subType)]);
 			button.transform.SetParent (buddyButtons.transform);
+
 			button.transform.localScale = Vector3.one;
 			button.transform.localPosition = Vector3.one;
+			//button.GetComponent<Image> ().color = LewdUtilities.getAttackTypeColor(attack.subType);
 			button.GetComponentInChildren<Text> ().text = attack.getName ();
 			button.GetComponentInChildren<Button> ().onClick.AddListener (() => {
 				button.GetComponent<CreateBuddyPanel>().create(attack, attack.type);
@@ -577,17 +602,17 @@ public class UIManagerScript : MonoBehaviour {
 						string temp = hub.getSequential ();
 						if(temp != null)combatLog.logText ("<size=24><b>" + currentChara.name + ":</b><i>\"" + temp + "\"</i></size>");
 					}
-					int pos = LewdUtilities.getPartyAlivePos (partyMap);
+					int pos = LewdUtilities.getPartyAlivePos(partyMap);
 					currentUI.GetComponent<Animator> ().Play ("Attack");
 					combatLog.logEnemyText (currentChara.getName () + attack.getFlavorText ());
 					if (attack.type == Attack.TYPE.BUFF) {
 						currentChara.armor += 2;
 					}
 					if (attack.type == Attack.TYPE.MAGIC) {
-						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.magicPower));
+						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.magicPower),attack.subType);
 					}
 					if (attack.type == Attack.TYPE.DAMAGE) {
-						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.attack));
+						dealDamageParty (pos, (int)(attack.getDamage () * currentChara.attack),attack.subType);
 					}
 					if (attack.type == Attack.TYPE.HEAL) {
 						healEnemy ((int)(attack.getDamage () * currentChara.magicPower));

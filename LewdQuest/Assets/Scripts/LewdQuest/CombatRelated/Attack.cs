@@ -9,6 +9,7 @@ public class Attack  {
 	float damage;
 	string flavorText { set; get; }
 	public TYPE type { get; set; }
+	public SUBTYPE subType { get; set; }
 
 
 	public enum TYPE{
@@ -20,6 +21,7 @@ public class Attack  {
 	}
 
 	public enum SUBTYPE{
+		NORMAL,
 		ROCK,
 		PAPER,
 		SCISSOR,
@@ -28,12 +30,13 @@ public class Attack  {
 
 
 
-	public Attack(string name, float damage , string flavorText , TYPE type){
+	public Attack(string name, float damage , string flavorText , TYPE type, SUBTYPE subtype){
 
 		this.name = name;
 		this.damage = damage;
 		this.flavorText = flavorText;
 		this.type = type;
+		this.subType = subtype;
 	}
 
 

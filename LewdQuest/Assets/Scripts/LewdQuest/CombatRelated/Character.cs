@@ -21,6 +21,7 @@ public class Character  {
 	public bool recruitable;
 	public int[] itemPool;
 	public int armor;
+	public Attack.SUBTYPE type{ get; set; }
 
 
 
@@ -56,10 +57,12 @@ public class Character  {
 		this.magicPower = magicPower;
 		this.image = image;
 		this.female = female;
+		this.type = type;
+		this.type = Attack.SUBTYPE.NORMAL;
 	}
 
 
-	public Character(int id, string name,int hp , int attack , int magicPower, string image , bool female, bool recruit , string attacks){
+	public Character(int id, string name,int hp , int attack , int magicPower, string image , bool female, bool recruit , string attacks, Attack.SUBTYPE type){
 		this.id = id;
 		this.hp = hp;
 		this.totalHP = hp;
@@ -69,6 +72,7 @@ public class Character  {
 		this.image = image;
 		this.female = female;
 		attackList = new List<Attack> ();
+		this.type = type;
 
 		string[] temp = attacks.Split(',');
 		for (int x = 0; x < temp.Length; x++) {
@@ -78,7 +82,7 @@ public class Character  {
 	}
 
 
-	public Character(int id, string name,int hp , int attack , int magicPower, string image , bool female, bool recruit, string attacks, int[] pool){
+	public Character(int id, string name,int hp , int attack , int magicPower, string image , bool female, bool recruit, string attacks, int[] pool, Attack.SUBTYPE type) {
 		this.id = id;
 		this.hp = hp;
 		this.totalHP = hp;
@@ -94,6 +98,7 @@ public class Character  {
 		for (int x = 0; x < temp.Length; x++) {
 			attackList.Add (AttackPool.createAttack(int.Parse(temp[x])));
 		}
+		this.type = type;
 
 
 	}
